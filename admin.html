@@ -1,0 +1,3006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阿睿ARUI - 后台管理</title>
+<style>
+:root {
+  --bg: #0b0b12;
+  --fg: #e8e8f0;
+  --fg-muted: #7a7a92;
+  --primary: #ff8c42;
+  --accent: #ff6b6b;
+  --surface: #151520;
+  --surface-hover: #1e1e2e;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  --radius: 12px;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.admin-subtitle {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-top: 4px;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 10px 24px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.btn--primary:hover {
+  box-shadow: 0 0 20px rgba(255, 140, 66, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border-hover);
+}
+
+.btn--secondary:hover {
+  border-color: var(--primary);
+  background: var(--surface);
+}
+
+.btn--danger {
+  background: var(--accent);
+  color: white;
+}
+
+.btn--small {
+  padding: 6px 16px;
+  font-size: 12px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+
+.tab {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--primary);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.tab:hover {
+  color: var(--fg);
+}
+
+.tab--active {
+  color: var(--primary);
+}
+
+.tab--active::after {
+  transform: scaleX(1);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content--active {
+  display: block;
+}
+
+/* Works List */
+.works-list {
+  display: grid;
+  gap: 16px;
+}
+
+.work-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 20px;
+  align-items: center;
+  transition: border-color 0.3s ease;
+}
+
+.work-item:hover {
+  border-color: var(--border-hover);
+}
+
+.work-thumb {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.work-info h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.work-info p {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.work-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(6, 6, 12, 0.92);
+  backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay--open .modal {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.modal-body {
+  padding: 32px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.modal-footer {
+  padding: 24px 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Profile Form */
+.profile-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+
+.profile-avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255, 140, 66, 0.2), rgba(255, 107, 107, 0.2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--primary);
+  opacity: 0.3;
+}
+
+.avatar-upload-btn {
+  flex: 1;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Login Background Animation */
+.login-bg-animation {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.login-bg-gradient {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: 
+    radial-gradient(circle at 30% 40%, rgba(30, 30, 46, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(21, 21, 32, 0.35) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(30, 30, 46, 0.3) 0%, transparent 40%);
+  animation: gradientMove 20s ease-in-out infinite;
+}
+
+@keyframes gradientMove {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(2%, -2%) rotate(1deg); }
+  66% { transform: translate(-1%, 1%) rotate(-1deg); }
+}
+
+.floating-particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: float 15s ease-in-out infinite;
+}
+
+.floating-particle:nth-child(1) {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  left: 10%;
+  top: 20%;
+  animation-delay: 0s;
+  animation-duration: 18s;
+}
+
+.floating-particle:nth-child(2) {
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  left: 85%;
+  top: 15%;
+  animation-delay: 2s;
+  animation-duration: 20s;
+}
+
+.floating-particle:nth-child(3) {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  left: 20%;
+  top: 75%;
+  animation-delay: 4s;
+  animation-duration: 16s;
+}
+
+.floating-particle:nth-child(4) {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  left: 75%;
+  top: 80%;
+  animation-delay: 6s;
+  animation-duration: 22s;
+}
+
+.floating-particle:nth-child(5) {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.09);
+  left: 50%;
+  top: 10%;
+  animation-delay: 8s;
+  animation-duration: 19s;
+}
+
+.floating-particle:nth-child(6) {
+  width: 14px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  left: 30%;
+  top: 50%;
+  animation-delay: 10s;
+  animation-duration: 21s;
+}
+
+.floating-particle:nth-child(7) {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  left: 90%;
+  top: 60%;
+  animation-delay: 12s;
+  animation-duration: 17s;
+}
+
+.floating-particle:nth-child(8) {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  left: 15%;
+  top: 90%;
+  animation-delay: 14s;
+  animation-duration: 23s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-100px) translateX(50px) scale(1.2);
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-200px) translateX(-30px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Glowing orbs */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.15;
+  animation: orbFloat 25s ease-in-out infinite;
+}
+
+.glow-orb--1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(30, 30, 46, 0.4), transparent);
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.glow-orb--2 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(21, 21, 32, 0.35), transparent);
+  bottom: 15%;
+  right: 10%;
+  animation-delay: 8s;
+}
+
+.glow-orb--3 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(30, 30, 46, 0.3), transparent);
+  top: 60%;
+  left: 70%;
+  animation-delay: 16s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -40px) scale(1.1); }
+  50% { transform: translate(-20px, 30px) scale(0.9); }
+  75% { transform: translate(40px, 20px) scale(1.05); }
+}
+
+/* Login Overlay */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg);
+  backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-overlay--hidden {
+  display: none;
+}
+
+.login-box {
+  position: relative;
+  z-index: 2;
+  background: var(--surface);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 420px;
+  padding: 48px 40px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-logo h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.login-logo p {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-top: 8px;
+}
+
+.login-form {
+  margin-bottom: 24px;
+}
+
+.login-error {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 16px;
+  display: none;
+}
+
+.login-error--show {
+  display: block;
+}
+
+.login-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.login-link {
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.login-link:hover {
+  opacity: 0.7;
+}
+
+/* Forgot Password Modal */
+.forgot-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(6, 6, 12, 0.95);
+  backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.forgot-modal--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.forgot-box {
+  background: var(--surface);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 420px;
+  padding: 40px;
+}
+
+.forgot-header {
+  margin-bottom: 24px;
+}
+
+.forgot-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.forgot-header p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+}
+
+.forgot-success {
+  background: rgba(255, 140, 66, 0.1);
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 13px;
+  color: var(--primary);
+  margin-top: 16px;
+  display: none;
+}
+
+.forgot-success--show {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .work-item {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .work-thumb {
+    width: 100%;
+    height: 120px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .login-box,
+  .forgot-box {
+    padding: 32px 24px;
+  }
+  .category-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Category Management */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.category-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.category-item:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-hover);
+}
+
+.category-item__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-item__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  flex-shrink: 0;
+}
+
+.category-item__count {
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-left: 4px;
+}
+
+.category-item__actions {
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.category-item:hover .category-item__actions {
+  opacity: 1;
+}
+
+.category-item__btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg-muted);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.category-item__btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.category-item__btn--delete:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.category-add-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.category-add-row .form-input {
+  flex: 1;
+}
+
+.category-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--fg-muted);
+  font-size: 14px;
+}
+
+/* Drag & Drop Sorting */
+.category-item {
+  cursor: grab;
+  user-select: none;
+}
+
+.category-item:active {
+  cursor: grabbing;
+}
+
+.category-item--dragging {
+  opacity: 0.4;
+  border-color: var(--primary);
+  transform: scale(0.97);
+}
+
+.category-item--dragover {
+  border-color: var(--primary);
+  background: rgba(255, 140, 66, 0.06);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.category-item__handle {
+  display: flex;
+  align-items: center;
+  color: var(--fg-muted);
+  opacity: 0.4;
+  cursor: grab;
+  margin-right: 8px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.category-item:hover .category-item__handle {
+  opacity: 0.8;
+}
+
+.category-item--dragging .category-item__handle {
+  opacity: 0.3;
+}
+
+/* Category Detail View */
+.category-detail {
+  display: none;
+}
+
+.category-detail--active {
+  display: block;
+}
+
+.category-detail__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.category-detail__back {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.category-detail__back:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(255, 140, 66, 0.06);
+}
+
+.category-detail__title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.category-detail__count {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-left: auto;
+}
+
+.category-detail__works {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.cat-work-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+.cat-work-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.cat-work-card__thumb {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.cat-work-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cat-work-card__thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+  font-size: 13px;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--surface), var(--surface-hover));
+}
+
+.cat-work-card__thumb-placeholder span {
+  font-size: 32px;
+  opacity: 0.3;
+}
+
+.cat-work-card__thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 6, 12, 0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cat-work-card:hover .cat-work-card__thumb-overlay {
+  opacity: 1;
+}
+
+.cat-work-card__thumb-btn {
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 110px;
+  text-align: center;
+}
+
+.cat-work-card__thumb-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.cat-work-card__thumb-btn--edit {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cat-work-card__thumb-btn--edit:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+}
+
+.cat-work-card__thumb-btn--delete {
+  border-color: rgba(255, 80, 80, 0.4);
+  background: rgba(255, 60, 60, 0.15);
+  color: #ff6b6b;
+}
+
+.cat-work-card__thumb-btn--delete:hover {
+  background: #e53e3e;
+  border-color: #e53e3e;
+  color: #fff;
+}
+
+.cat-work-card__info {
+  padding: 16px;
+}
+
+.cat-work-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cat-work-card__link {
+  font-size: 12px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.cat-work-card__link:hover {
+  color: var(--primary);
+}
+
+.category-list-wrapper--hidden {
+  display: none;
+}
+
+/* Gallery Modal */
+.gallery-modal {
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+}
+
+.gallery-modal__cover {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: var(--bg);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.gallery-modal__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-modal__cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+  font-size: 14px;
+  background: linear-gradient(135deg, var(--surface), var(--surface-hover));
+}
+
+.gallery-modal__cover-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  background: var(--primary);
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.gallery-modal__cover-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(6,6,12,0.6);
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.gallery-modal__cover-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: border-color 0.2s ease;
+}
+
+.gallery-item:hover {
+  border-color: var(--border-hover);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-item__delete {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 107, 107, 0.85);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: scale(0.8);
+}
+
+.gallery-item:hover .gallery-item__delete {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gallery-item__delete:hover {
+  background: var(--accent);
+}
+
+.gallery-item__set-cover {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  padding: 3px 10px;
+  border-radius: 50px;
+  border: none;
+  background: rgba(6,6,12,0.7);
+  color: #fff;
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.gallery-item:hover .gallery-item__set-cover {
+  opacity: 1;
+}
+
+.gallery-item__set-cover:hover {
+  background: var(--primary);
+}
+
+.gallery-add-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.gallery-add-row .form-input {
+  flex: 1;
+}
+
+.gallery-upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 16px;
+  border: 2px dashed var(--border-hover);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.gallery-upload-zone:hover {
+  border-color: var(--primary);
+  background: rgba(255, 140, 66, 0.04);
+}
+
+.gallery-upload-zone__icon {
+  font-size: 28px;
+  opacity: 0.5;
+}
+
+.gallery-upload-zone__text {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.gallery-upload-zone__hint {
+  font-size: 11px;
+  color: var(--fg-muted);
+  opacity: 0.6;
+}
+
+.gallery-cover-upload {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--surface), var(--surface-hover));
+  transition: background 0.3s ease;
+}
+
+.gallery-cover-upload:hover {
+  background: linear-gradient(135deg, var(--surface-hover), var(--surface));
+}
+
+.gallery-cover-upload__icon {
+  font-size: 32px;
+  opacity: 0.4;
+}
+
+.gallery-cover-upload__text {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.gallery-item--add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 2px dashed var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 112px;
+}
+
+.gallery-item--add:hover {
+  border-color: var(--primary);
+  background: rgba(255, 140, 66, 0.04);
+}
+
+.gallery-item--add__icon {
+  font-size: 24px;
+  color: var(--fg-muted);
+  opacity: 0.5;
+}
+
+.gallery-item--add__text {
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+.gallery-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--fg-muted);
+  font-size: 13px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+/* ─── Custom Confirm/Alert Dialog ─── */
+.custom-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(6, 6, 12, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.custom-dialog-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.custom-dialog {
+  background: var(--surface);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 400px;
+  padding: 32px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  transform: translateY(12px) scale(0.97);
+  transition: transform 0.25s ease;
+}
+.custom-dialog-overlay--open .custom-dialog {
+  transform: translateY(0) scale(1);
+}
+.custom-dialog__message {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--fg);
+  margin-bottom: 28px;
+  white-space: pre-line;
+}
+.custom-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav" style="position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; background: rgba(20, 20, 35, 0.72); backdrop-filter: blur(20px) saturate(1.4); border-bottom: 1px solid rgba(255, 255, 255, 0.07);">
+  <div id="admin-nav-logo" style="font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: #e8e8f0;">阿睿<span style="color: #ff8c42;">.</span>ARUI</div>
+  <ul style="display: flex; gap: 32px; list-style: none; margin: 0; padding: 0;">
+    <li><a href="index.html" style="font-size: 14px; font-weight: 500; color: #7a7a92; letter-spacing: 0.02em; text-decoration: none; transition: color 0.25s ease;">首页</a></li>
+    <li><a href="admin.html" style="font-size: 14px; font-weight: 500; color: #e8e8f0; letter-spacing: 0.02em; text-decoration: none; position: relative; padding-bottom: 4px; border-bottom: 1.5px solid #ff8c42;">后台管理</a></li>
+  </ul>
+  <a href="index.html#works" style="font-size: 13px; font-weight: 500; letter-spacing: 0.02em; padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.14); color: #e8e8f0; text-decoration: none; transition: all 0.3s ease; background: transparent;">查看简介</a>
+</nav>
+
+<!-- Login Overlay -->
+<div class="login-overlay" id="login-overlay">
+  <!-- Background Animation (inside overlay, behind login box) -->
+  <div class="login-bg-animation">
+    <div class="login-bg-gradient"></div>
+    
+    <!-- Floating Particles -->
+    <div class="floating-particle"></div>
+    <div class="floating-particle"></div>
+    <div class="floating-particle"></div>
+    <div class="floating-particle"></div>
+    <div class="floating-particle"></div>
+    <div class="floating-particle"></div>
+    <div class="floating-particle"></div>
+    <div class="floating-particle"></div>
+    
+    <!-- Glowing Orbs -->
+    <div class="glow-orb glow-orb--1"></div>
+    <div class="glow-orb glow-orb--2"></div>
+    <div class="glow-orb glow-orb--3"></div>
+  </div>
+  
+  <div class="login-box">
+    <div class="login-logo">
+      <h1>后台管理登录</h1>
+      <p>请输入管理员账号和密码</p>
+    </div>
+    
+    <form class="login-form" id="login-form">
+      <div class="login-error" id="login-error">用户名或密码错误</div>
+      
+      <div class="form-group">
+        <label class="form-label">用户名</label>
+        <input type="text" class="form-input" id="login-username" placeholder="请输入用户名" required>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">密码</label>
+        <input type="password" class="form-input" id="login-password" placeholder="请输入密码" required>
+      </div>
+      
+      <button type="submit" class="btn btn--primary" style="width: 100%; margin-top: 8px;">登录</button>
+      
+      <div class="login-links">
+        <a href="#" class="login-link" onclick="openForgotPassword(event)">忘记密码?</a>
+        <a href="index.html" class="login-link">← 返回首页</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="forgot-modal" id="forgot-modal">
+  <div class="forgot-box">
+    <div class="forgot-header">
+      <h2>重置密码</h2>
+      <p>请输入注册邮箱，我们将发送密码重置链接到您的邮箱。</p>
+    </div>
+    
+    <form id="forgot-form">
+      <div class="form-group">
+        <label class="form-label">邮箱地址</label>
+        <input type="email" class="form-input" id="forgot-email" placeholder="example@qq.com" required>
+      </div>
+      
+      <div class="forgot-success" id="forgot-success">
+        ✓ 验证邮件已发送到您的邮箱，请查收并点击链接重置密码。
+      </div>
+      
+      <button type="submit" class="btn btn--primary" style="width: 100%; margin-top: 16px;">发送验证邮件</button>
+      
+      <div style="margin-top: 16px; text-align: center;">
+        <a href="#" class="login-link" onclick="closeForgotPassword(event)">← 返回登录</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="admin-container" style="padding-top: 104px;">
+  <header class="admin-header">
+    <div>
+      <h1 class="admin-title">后台管理</h1>
+      <p class="admin-subtitle">管理作品集内容和个人信息</p>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button onclick="logout()" class="btn btn--secondary">退出登录</button>
+      <a href="index.html" class="btn btn--secondary">← 返回首页</a>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab tab--active" data-tab="works">作品管理</button>
+    <button class="tab" data-tab="categories">分类管理</button>
+    <button class="tab" data-tab="profile">个人信息</button>
+    <button class="tab" data-tab="deploy">部署设置</button>
+    <button class="tab" data-tab="export">数据导出</button>
+  </div>
+
+  <!-- Works Tab -->
+  <div class="tab-content tab-content--active" id="tab-works">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+      <h2 style="font-size: 20px; font-weight: 600;">作品列表</h2>
+      <button class="btn btn--primary" onclick="openWorkModal()">+ 添加作品</button>
+    </div>
+    <div class="works-list" id="works-list"></div>
+  </div>
+
+  <!-- Categories Tab -->
+  <div class="tab-content" id="tab-categories">
+    <!-- Category List View -->
+    <div id="category-list-wrapper">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+          <h2 style="font-size: 20px; font-weight: 600;">分类管理</h2>
+          <p style="font-size: 13px; color: var(--fg-muted); margin-top: 4px;">管理作品筛选分类，点击分类可查看和管理作品图片</p>
+        </div>
+      </div>
+      <div class="category-add-row" style="margin-bottom: 24px;">
+        <input type="text" class="form-input" id="new-category-name" placeholder="输入新分类名称，例如：VR设计" style="max-width: 320px;">
+        <button class="btn btn--primary" onclick="addCategory()">+ 添加分类</button>
+      </div>
+      <div class="category-grid" id="category-list"></div>
+    </div>
+
+    <!-- Category Detail View (hidden by default) -->
+    <div class="category-detail" id="category-detail">
+      <div class="category-detail__header">
+        <button class="category-detail__back" onclick="closeCategoryDetail()" title="返回分类列表">←</button>
+        <h2 class="category-detail__title" id="category-detail-title"></h2>
+        <span class="category-detail__count" id="category-detail-count"></span>
+      </div>
+      <div class="category-detail__works" id="category-detail-works"></div>
+    </div>
+  </div>
+
+  <!-- Profile Tab -->
+  <div class="tab-content" id="tab-profile">
+    <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 24px;">个人信息</h2>
+    <form class="profile-form" id="profile-form">
+      <div class="profile-avatar-upload">
+        <div class="avatar-preview">AR</div>
+        <div class="avatar-upload-btn">
+          <label class="form-label">头像上传</label>
+          <input type="file" accept="image/*" class="form-input" id="avatar-upload">
+          <p style="font-size: 12px; color: var(--fg-muted); margin-top: 8px;">支持 JPG、PNG 格式，建议尺寸 280x320px</p>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">导航栏 Logo 名称</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">品牌名（左）</label>
+            <input type="text" class="form-input" id="profile-brandLeft" value="阿睿" placeholder="如: 阿睿">
+          </div>
+          <div class="form-group">
+            <label class="form-label">品牌名（右）</label>
+            <input type="text" class="form-input" id="profile-brandRight" value="ARUI" placeholder="如: ARUI">
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">首页 Hero 区域</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Hero 标签</label>
+            <input type="text" class="form-input" id="profile-heroBadge" value="UI/UX Designer" placeholder="如: UI/UX Designer">
+          </div>
+
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label class="form-label">Hero 名称（左）</label>
+              <input type="text" class="form-input" id="profile-heroNameLeft" value="阿睿" placeholder="白色部分">
+            </div>
+            <div>
+              <label class="form-label">Hero 名称（右）</label>
+              <input type="text" class="form-input" id="profile-heroNameRight" value="ARUI" placeholder="橙色部分">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Hero 标语</label>
+          <input type="text" class="form-input" id="profile-heroTagline" value="专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。" placeholder="首页大标题下方的描述文字">
+        </div>
+      </div>
+
+      <div style="margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--primary);">作品集区域标题</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">英文副标题</label>
+            <input type="text" class="form-input" id="profile-sectionLabel" value="Selected Works" placeholder="如: Selected Works">
+          </div>
+          <div class="form-group">
+            <label class="form-label">中文标题</label>
+            <input type="text" class="form-input" id="profile-sectionTitle" value="作品集" placeholder="如: 作品集">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">姓名</label>
+          <input type="text" class="form-input" id="profile-name" value="阿睿">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">职位标题</label>
+          <input type="text" class="form-input" id="profile-title" value="UI/UX Designer">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">性别</label>
+          <select class="form-select" id="profile-gender">
+            <option value="男">男</option>
+            <option value="女">女</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">年龄</label>
+          <input type="number" class="form-input" id="profile-age" value="28">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">邮箱</label>
+          <input type="email" class="form-input" id="profile-email" value="arui@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">电话</label>
+          <input type="tel" class="form-input" id="profile-phone" value="+86 138-0013-8000">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">求职方向</label>
+          <input type="text" class="form-input" id="profile-direction" value="UI/UX设计师 · 产品设计师">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">工作经验</label>
+          <input type="text" class="form-input" id="profile-experience" value="5年">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">所在地</label>
+          <input type="text" class="form-input" id="profile-location" value="北京">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">个人简介</label>
+        <textarea class="form-textarea" id="profile-bio">专注APP、网页、车机及多领域数字体验设计,擅长将创意与用户需求结合,打造直观、美观且易用的产品界面。具备丰富的B端和C端项目经验,致力于通过设计提升产品价值和用户体验。</textarea>
+      </div>
+      
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" class="btn btn--primary">保存修改</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Deploy Settings Tab -->
+  <div class="tab-content" id="tab-deploy">
+    <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 24px;">部署设置</h2>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px;">
+      <p style="color: var(--fg-muted); margin-bottom: 24px; line-height: 1.6;">
+        配置 GitHub 仓库信息，用于在线部署。数据将保存到 GitHub 仓库的 data.json，图片将上传到仓库的 uploads 目录。
+      </p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">GitHub Token</label>
+          <input type="password" id="gh-token" class="form-input" placeholder="ghp_xxxxxxxxxxxx">
+          <small style="color: var(--fg-muted); margin-top: 4px; display: block;">
+            从 <a href="https://github.com/settings/tokens" target="_blank" style="color: var(--primary);">GitHub Settings → Tokens</a> 获取，需要 repo 权限
+          </small>
+        </div>
+        <div class="form-group">
+          <label class="form-label">仓库用户名</label>
+          <input type="text" id="gh-owner" class="form-input" placeholder="your-username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">仓库名称</label>
+          <input type="text" id="gh-repo" class="form-input" placeholder="my-portfolio">
+        </div>
+      </div>
+      <div style="margin-top: 24px; display: flex; gap: 12px; align-items: center;">
+        <button onclick="saveGitHubConfig()" class="btn btn--primary">保存配置</button>
+        <button onclick="testGitHubConnection()" class="btn btn--secondary">测试连接</button>
+        <span id="gh-status" style="font-size: 13px; color: var(--fg-muted);"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Tab -->
+  <div class="tab-content" id="tab-export">
+    <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 24px;">数据导出</h2>
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px;">
+      <p style="color: var(--fg-muted); margin-bottom: 24px; line-height: 1.6;">
+        将所有数据导出为 JSON 文件，可以备份到本地或导入到其他系统。导出的文件包含所有作品信息和个人资料。
+      </p>
+      <button class="btn btn--primary" onclick="exportData()">📥 导出数据 (JSON)</button>
+    </div>
+  </div>
+</div>
+
+<!-- Work Modal -->
+<div class="modal-overlay" id="work-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-title">添加作品</h3>
+      <button class="modal-close" onclick="closeWorkModal()">&times;</button>
+    </div>
+    <form id="work-form">
+      <div class="modal-body">
+        <input type="hidden" id="work-id">
+        
+        <div class="form-group">
+          <label class="form-label">作品标题 *</label>
+          <input type="text" class="form-input" id="work-title" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">分类 *</label>
+          <select class="form-select" id="work-category" required>
+            <option value="">请选择分类</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">作品链接 *</label>
+          <input type="url" class="form-input" id="work-link" placeholder="https://www.zcool.com.cn/work/..." required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">缩略图URL *</label>
+          <input type="url" class="form-input" id="work-thumb" placeholder="https://img.zcool.cn/community/..." required>
+          <p style="font-size: 12px; color: var(--fg-muted); margin-top: 8px;">建议使用站酷作品的缩略图链接</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn--secondary" onclick="closeWorkModal()">取消</button>
+        <button type="submit" class="btn btn--primary">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Gallery Modal -->
+<div class="modal-overlay" id="gallery-modal">
+  <div class="modal gallery-modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="gallery-title">编辑作品集</h3>
+      <button class="modal-close" onclick="closeGalleryModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <!-- Cover Image -->
+      <div class="gallery-modal__cover" id="gallery-cover">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Gallery Images -->
+      <label class="form-label" style="margin-bottom: 12px;">作品集图片</label>
+      <div id="gallery-grid" class="gallery-grid">
+        <!-- Rendered dynamically -->
+      </div>
+      <div id="gallery-empty" class="gallery-empty" style="display:none;">
+        暂无图片，点击下方区域上传本地图片
+      </div>
+
+      <!-- Upload Zone -->
+      <div class="gallery-upload-zone" onclick="document.getElementById('gallery-file-input').click()">
+        <span class="gallery-upload-zone__icon">📁</span>
+        <span class="gallery-upload-zone__text">点击上传作品图片（支持多选）</span>
+        <span class="gallery-upload-zone__hint">支持 JPG、PNG、WebP，图片会自动压缩</span>
+      </div>
+
+      <!-- Hidden file inputs -->
+      <input type="file" id="gallery-file-input" accept="image/*" multiple style="display:none" onchange="handleGalleryFileUpload(event)">
+      <input type="file" id="cover-file-input" accept="image/*" style="display:none" onchange="handleCoverFileUpload(event)">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn--secondary" onclick="closeGalleryModal()">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Confirm/Alert Dialog -->
+<div class="custom-dialog-overlay" id="custom-dialog-overlay">
+  <div class="custom-dialog">
+    <div class="custom-dialog__message" id="custom-dialog-message"></div>
+    <div class="custom-dialog__actions" id="custom-dialog-actions"></div>
+  </div>
+</div>
+
+<script>
+// ─── Custom Confirm/Alert Dialogs (Canvas iframe compatible) ───
+function showConfirm(message, onConfirm) {
+  var overlay = document.getElementById('custom-dialog-overlay');
+  var msgEl = document.getElementById('custom-dialog-message');
+  var actionsEl = document.getElementById('custom-dialog-actions');
+  msgEl.textContent = message;
+  actionsEl.innerHTML =
+    '<button class="btn btn--secondary" id="cd-cancel">取消</button>' +
+    '<button class="btn btn--danger" id="cd-ok">确定</button>';
+  overlay.classList.add('custom-dialog-overlay--open');
+
+  function close() { overlay.classList.remove('custom-dialog-overlay--open'); }
+  document.getElementById('cd-cancel').onclick = function() { close(); };
+  document.getElementById('cd-ok').onclick = function() { close(); if (onConfirm) onConfirm(); };
+}
+
+function showAlert(message) {
+  var overlay = document.getElementById('custom-dialog-overlay');
+  var msgEl = document.getElementById('custom-dialog-message');
+  var actionsEl = document.getElementById('custom-dialog-actions');
+  msgEl.textContent = message;
+  actionsEl.innerHTML = '<button class="btn btn--primary" id="cd-ok">知道了</button>';
+  overlay.classList.add('custom-dialog-overlay--open');
+  document.getElementById('cd-ok').onclick = function() {
+    overlay.classList.remove('custom-dialog-overlay--open');
+  };
+}
+
+function showPrompt(message, defaultValue, onConfirm) {
+  var overlay = document.getElementById('custom-dialog-overlay');
+  var msgEl = document.getElementById('custom-dialog-message');
+  var actionsEl = document.getElementById('custom-dialog-actions');
+  msgEl.innerHTML = '';
+  var label = document.createElement('div');
+  label.textContent = message;
+  label.style.marginBottom = '12px';
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'form-input';
+  input.value = defaultValue || '';
+  input.style.width = '100%';
+  msgEl.appendChild(label);
+  msgEl.appendChild(input);
+  actionsEl.innerHTML =
+    '<button class="btn btn--secondary" id="cd-cancel">取消</button>' +
+    '<button class="btn btn--primary" id="cd-ok">确定</button>';
+  overlay.classList.add('custom-dialog-overlay--open');
+  setTimeout(function() { input.focus(); input.select(); }, 100);
+
+  function close() { overlay.classList.remove('custom-dialog-overlay--open'); }
+  document.getElementById('cd-cancel').onclick = function() { close(); };
+  document.getElementById('cd-ok').onclick = function() { var val = input.value; close(); if (onConfirm) onConfirm(val); };
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); var val = input.value; close(); if (onConfirm) onConfirm(val); }
+  });
+}
+
+// Default works data
+const DEFAULT_WORKS = [
+  { id:1,  title:"JunyStar-Web Design",           category:"网页设计",  link:"https://www.zcool.com.cn/work/ZNzMzNzE1NTI=.html",     thumb:"https://img.zcool.cn/community/69ca0ca586e7bp8sef9087620.png?k=a71d328954003528b94c7a151fb81da8&t=6a302180" },
+  { id:2,  title:"2024季度部分作品整理",             category:"APP设计",   link:"https://www.zcool.com.cn/work/ZNzAyMjkyNDA=.html",     thumb:"https://img.zcool.cn/community/66bf132e37386x3wd6phr45216.png?k=873b75c118beaf868940798f10836de5&t=6a302180" },
+  { id:3,  title:"数藏交流平台-Digital Link",        category:"APP设计",   link:"https://www.zcool.com.cn/work/ZNjc2MTM5NDQ=.html",     thumb:"https://img.zcool.cn/community/031fovecdy8oufiyrwdhlbc3231.png?k=5365554b27b1effa70918cc12512219f&t=6a302180" },
+  { id:4,  title:"It's Me APP",                     category:"APP设计",   link:"https://www.zcool.com.cn/work/ZNjc1NjA4MDA=.html",     thumb:"https://img.zcool.cn/community/031j5civkdef3ol4oro08tq3536.png?k=8dd84fc1f8b7569eea99661472399bdb&t=6a302180" },
+  { id:5,  title:"HMI Concept Design-2023",         category:"HMI设计",   link:"https://www.zcool.com.cn/work/ZNjczMjEzMjg=.html",     thumb:"https://img.zcool.cn/community/031ntfqe48b0q6namycrn1n3334.png?k=ddcf0b582fde83d942c42447c9d8d4b7&t=6a302180" },
+  { id:6,  title:"2022 设计作品合集",               category:"综合设计",  link:"https://www.zcool.com.cn/work/ZNjQ0Mjk2MDA=.html",     thumb:"https://img.zcool.cn/community/0311esuwxi9z9bpryney0e93332.png?k=73fb426fff3073b0eaf604d25f5139c5&t=6a302180" },
+  { id:7,  title:"MOTA 饮水智能面板方案设计",        category:"智能硬件",  link:"https://www.zcool.com.cn/work/ZNjQzMDY4NzI=.html",     thumb:"https://img.zcool.cn/community/031cdn8ibxxarryydglvhjj3938.png?k=5f416a89e08d93a87ea3a2af37b25b3f&t=6a302180" },
+  { id:8,  title:"About-网页设计集",                 category:"网页设计",  link:"https://www.zcool.com.cn/work/ZNjIwNTE1NjA=.html",     thumb:"https://img.zcool.cn/community/031ny6e4t6jigh0odporbn43838.png?k=d4a376d217ac455cead631d682a9bd99&t=6a302180" },
+  { id:9,  title:"About-B端项目合集",                category:"B端设计",   link:"https://www.zcool.com.cn/work/ZNjE4NDE1NzY=.html",     thumb:"https://img.zcool.cn/community/031mdeexjvid9j6ii6kavth3230.png?k=82917779d7da8dd8533a75833daeb7ba&t=6a302180" },
+  { id:10, title:"一些杂货整理",                     category:"综合设计",  link:"https://www.zcool.com.cn/work/ZNjA3NDAwNDg=.html",     thumb:"https://img.zcool.cn/community/031g8zjyiw4onwbnumex2wb3939.png?k=013f30592b993180235b7c5d84c2de3c&t=6a302180" },
+  { id:11, title:"比亚迪车机主题设计-蓝色星河",       category:"HMI设计",   link:"https://www.zcool.com.cn/work/ZNjAyNTk1ODQ=.html",     thumb:"https://img.zcool.cn/community/031regd3ttcu1qvpi9ceegd3035.png?k=f010d9fdfc87f509a8f3a2734e943c9b&t=6a302180" },
+  { id:12, title:"空状态插画设计-飞书",               category:"插画设计",  link:"https://www.zcool.com.cn/work/ZNTk3MTE5OTI=.html",     thumb:"https://img.zcool.cn/community/031pcs7wn8lrh4kckxo68qm3833.png?k=7757215993bd12ef5019ee6920f14a11&t=6a302180" },
+  { id:13, title:"智选小程序-教学管理工具",            category:"APP设计",   link:"https://www.zcool.com.cn/work/ZNTYwMDc3NzY=.html",     thumb:"https://img.zcool.cn/community/031i0eo3n0f4nlnexmpvfrj3235.png?k=ca2dae58484bed3aa561796439ce5338&t=6a302180" },
+  { id:14, title:"云及数据大屏编辑平台",               category:"B端设计",   link:"https://www.zcool.com.cn/work/ZNTQ2MzgyOTI=.html",     thumb:"https://img.zcool.cn/community/011fa96119e95f11013eaf70f2d098.jpg?k=db128bd155f61acf242f18d70fd38e1b&t=6a302180" },
+  { id:15, title:"甲状腺健康管家APP",                 category:"APP设计",   link:"https://www.zcool.com.cn/work/ZNTE2MTYxNDA=.html",     thumb:"https://img.zcool.cn/community/01ea37605c549411013e87f41d5189.jpg?k=8e475df194293813e17109006a49923a&t=6a302180" }
+];
+
+// Default data — used until server data loads
+let works = [...DEFAULT_WORKS];
+
+// Default profile
+let profile = {
+  name: '阿睿',
+  title: 'UI/UX Designer',
+  gender: '男',
+  age: 28,
+  email: 'arui@example.com',
+  phone: '+86 138-0013-8000',
+  direction: 'UI/UX设计师 · 产品设计师',
+  experience: '5年',
+  location: '北京',
+  bio: '专注APP、网页、车机及多领域数字体验设计,擅长将创意与用户需求结合,打造直观、美观且易用的产品界面。具备丰富的B端和C端项目经验,致力于通过设计提升产品价值和用户体验。',
+  avatar: null,
+  heroBadge: 'UI/UX Designer',
+  heroNameLeft: '阿睿',
+  heroNameRight: 'ARUI',
+  heroTagline: '专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。',
+  brandLeft: '阿睿',
+  brandRight: 'ARUI',
+  sectionLabel: 'Selected Works',
+  sectionTitle: '作品集'
+};
+
+// Default categories
+const DEFAULT_CATEGORIES = ['APP设计', '网页设计', 'HMI设计', 'B端设计', '智能硬件', '插画设计', '综合设计'];
+
+// Default categories — used until server data loads
+let categories = [...DEFAULT_CATEGORIES];
+
+// ─── GitHub API Integration ───
+var ghConfig = {
+  token: '',
+  owner: '',
+  repo: '',
+  branch: 'main',
+  dataSha: null  // SHA of data.json for updates
+};
+
+// Load GitHub config from localStorage
+(function loadGhConfig() {
+  try {
+    var saved = localStorage.getItem('arui_gh_config');
+    if (saved) {
+      var c = JSON.parse(saved);
+      ghConfig.token = c.token || '';
+      ghConfig.owner = c.owner || '';
+      ghConfig.repo = c.repo || '';
+    }
+  } catch(e) {}
+})();
+
+function ghApiUrl(path) {
+  return 'https://api.github.com/repos/' + ghConfig.owner + '/' + ghConfig.repo + '/contents/' + path;
+}
+
+function ghRawUrl(path) {
+  return 'https://raw.githubusercontent.com/' + ghConfig.owner + '/' + ghConfig.repo + '/' + ghConfig.branch + '/' + path;
+}
+
+function ghApiCall(method, path, body) {
+  var opts = {
+    method: method,
+    headers: {
+      'Authorization': 'token ' + ghConfig.token,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  };
+  if (body) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  return fetch(ghApiUrl(path), opts);
+}
+
+function saveGitHubConfig() {
+  ghConfig.token = document.getElementById('gh-token').value.trim();
+  ghConfig.owner = document.getElementById('gh-owner').value.trim();
+  ghConfig.repo = document.getElementById('gh-repo').value.trim();
+  if (!ghConfig.token || !ghConfig.owner || !ghConfig.repo) {
+    showAlert('请填写完整的 GitHub 配置信息');
+    return;
+  }
+  localStorage.setItem('arui_gh_config', JSON.stringify({
+    token: ghConfig.token, owner: ghConfig.owner, repo: ghConfig.repo
+  }));
+  showAlert('GitHub 配置已保存');
+}
+
+function testGitHubConnection() {
+  var status = document.getElementById('gh-status');
+  status.textContent = '正在测试连接...';
+  status.style.color = 'var(--fg-muted)';
+
+  ghApiCall('GET', 'data.json')
+    .then(function(r) {
+      if (r.ok) {
+        status.textContent = '✓ 连接成功';
+        status.style.color = '#4ade80';
+        return r.json();
+      } else if (r.status === 404) {
+        status.textContent = '✓ 连接成功（data.json 尚未创建）';
+        status.style.color = '#facc15';
+        return null;
+      } else {
+        throw new Error('HTTP ' + r.status);
+      }
+    })
+    .then(function(data) {
+      if (data && data.sha) {
+        ghConfig.dataSha = data.sha;
+      }
+    })
+    .catch(function(e) {
+      status.textContent = '✗ 连接失败: ' + e.message;
+      status.style.color = '#f87171';
+    });
+}
+
+// Save all data to GitHub
+function saveDataToServer() {
+  if (!ghConfig.token || !ghConfig.owner || !ghConfig.repo) {
+    // Fallback: try local server
+    saveDataLocal();
+    return;
+  }
+
+  var payload = { works: works, profile: profile, categories: categories };
+  var content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
+
+  var body = {
+    message: 'Update portfolio data',
+    content: content,
+    branch: ghConfig.branch
+  };
+
+  // Need SHA for updates
+  var doSave = function(sha) {
+    if (sha) body.sha = sha;
+    return ghApiCall('PUT', 'data.json', body).then(function(r) {
+      return r.json().then(function(data) {
+        if (r.ok && data.content) {
+          ghConfig.dataSha = data.content.sha;
+          broadcastToFrames('arui_works', JSON.stringify(works));
+          broadcastToFrames('arui_profile', JSON.stringify(profile));
+          broadcastToFrames('arui_categories', JSON.stringify(categories));
+        } else {
+          console.warn('GitHub save failed:', data);
+        }
+      });
+    });
+  };
+
+  if (ghConfig.dataSha) {
+    doSave(ghConfig.dataSha);
+  } else {
+    // Fetch SHA first
+    ghApiCall('GET', 'data.json')
+      .then(function(r) {
+        if (r.ok) return r.json();
+        return { sha: null };
+      })
+      .then(function(data) {
+        ghConfig.dataSha = data.sha || null;
+        return doSave(ghConfig.dataSha);
+      })
+      .catch(function(e) {
+        console.warn('GitHub save failed:', e);
+      });
+  }
+}
+
+// Fallback: save to local server
+function saveDataLocal() {
+  var API_BASE = 'http://127.0.0.1:8765';
+  var payload = { works: works, profile: profile, categories: categories };
+  fetch(API_BASE + '/api/data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(r) {
+    if (r.ok) {
+      broadcastToFrames('arui_works', JSON.stringify(works));
+      broadcastToFrames('arui_profile', JSON.stringify(profile));
+      broadcastToFrames('arui_categories', JSON.stringify(categories));
+    }
+  }).catch(function(e) {
+    console.warn('Local save failed:', e);
+  });
+}
+
+// Save categories
+function saveCategories() {
+  saveDataToServer();
+}
+
+// Load all data — try GitHub first, then local server
+function loadDataFromServer() {
+  // If GitHub is configured, load from GitHub
+  if (ghConfig.token && ghConfig.owner && ghConfig.repo) {
+    return fetch(ghRawUrl('data.json'))
+      .then(function(r) {
+        if (!r.ok) throw new Error('GitHub returned ' + r.status);
+        return r.json();
+      })
+      .then(function(data) {
+        if (data.works && Array.isArray(data.works)) works = data.works;
+        if (data.profile) profile = data.profile;
+        if (data.categories && Array.isArray(data.categories)) categories = data.categories;
+      })
+      .catch(function(e) {
+        console.warn('GitHub load failed, trying local server:', e);
+        return loadFromLocal();
+      });
+  }
+  return loadFromLocal();
+}
+
+function loadFromLocal() {
+  var API_BASE = 'http://127.0.0.1:8765';
+  return fetch(API_BASE + '/api/data')
+    .then(function(r) {
+      if (!r.ok) throw new Error('Local server returned ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      if (data.works && Array.isArray(data.works)) works = data.works;
+      if (data.profile) profile = data.profile;
+      if (data.categories && Array.isArray(data.categories)) categories = data.categories;
+    })
+    .catch(function(e) {
+      console.warn('Failed to load data, using defaults:', e);
+    });
+}
+
+// Render category list in admin
+function renderCategoryList() {
+  const list = document.getElementById('category-list');
+  if (!list) return;
+
+  if (categories.length === 0) {
+    list.innerHTML = '<div class="category-empty">暂无分类，请在上方添加</div>';
+    return;
+  }
+
+  list.innerHTML = categories.map((cat, index) => {
+    const count = works.filter(w => w.category === cat).length;
+    return `
+      <div class="category-item" id="cat-item-${index}" draggable="true" data-index="${index}" onclick="openCategoryDetail(${index})" style="cursor: pointer;">
+        <span class="category-item__name">
+          <span class="category-item__handle" title="拖拽排序" onclick="event.stopPropagation()">⠿</span>
+          <span class="category-item__dot"></span>
+          <span id="cat-name-${index}">${cat}</span>
+          ${count > 0 ? `<span class="category-item__count">(${count}个作品)</span>` : ''}
+        </span>
+        <span class="category-item__actions" onclick="event.stopPropagation()">
+          <button class="category-item__btn" onclick="editCategory(${index})" title="重命名">✎</button>
+          <button class="category-item__btn category-item__btn--delete" onclick="deleteCategory(${index})" title="删除">✕</button>
+        </span>
+      </div>
+    `;
+  }).join('');
+
+  // Bind drag-and-drop events
+  bindCategoryDragHandlers();
+}
+
+// Drag-and-drop sorting for categories
+let dragSourceIndex = null;
+
+function bindCategoryDragHandlers() {
+  const items = document.querySelectorAll('.category-item[draggable]');
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', function(e) {
+      dragSourceIndex = parseInt(this.dataset.index);
+      this.classList.add('category-item--dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', dragSourceIndex);
+    });
+
+    item.addEventListener('dragend', function() {
+      this.classList.remove('category-item--dragging');
+      // Remove all dragover states
+      document.querySelectorAll('.category-item--dragover').forEach(el => {
+        el.classList.remove('category-item--dragover');
+      });
+      dragSourceIndex = null;
+    });
+
+    item.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (parseInt(this.dataset.index) !== dragSourceIndex) {
+        this.classList.add('category-item--dragover');
+      }
+    });
+
+    item.addEventListener('dragleave', function() {
+      this.classList.remove('category-item--dragover');
+    });
+
+    item.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('category-item--dragover');
+      const targetIndex = parseInt(this.dataset.index);
+      if (dragSourceIndex === null || dragSourceIndex === targetIndex) return;
+
+      // Reorder categories array
+      const moved = categories.splice(dragSourceIndex, 1)[0];
+      categories.splice(targetIndex, 0, moved);
+
+      saveCategories();
+      renderCategoryList();
+      populateCategorySelect();
+    });
+  });
+}
+
+// Category Detail View
+let currentDetailCategory = null;
+
+function openCategoryDetail(index) {
+  currentDetailCategory = categories[index];
+  const catWorks = works.filter(w => w.category === currentDetailCategory);
+
+  document.getElementById('category-list-wrapper').classList.add('category-list-wrapper--hidden');
+  document.getElementById('category-detail').classList.add('category-detail--active');
+  document.getElementById('category-detail-title').textContent = currentDetailCategory;
+  document.getElementById('category-detail-count').textContent = catWorks.length + ' 个作品';
+
+  renderCategoryDetailWorks(currentDetailCategory);
+}
+
+function closeCategoryDetail() {
+  currentDetailCategory = null;
+  document.getElementById('category-list-wrapper').classList.remove('category-list-wrapper--hidden');
+  document.getElementById('category-detail').classList.remove('category-detail--active');
+  // Re-render category list to reflect any changes
+  renderCategoryList();
+}
+
+function renderCategoryDetailWorks(categoryName) {
+  const container = document.getElementById('category-detail-works');
+  const catWorks = works.filter(w => w.category === categoryName);
+  document.getElementById('category-detail-count').textContent = catWorks.length + ' 个作品';
+
+  if (catWorks.length === 0) {
+    container.innerHTML = '<div class="category-empty">该分类下暂无作品，可在「作品管理」中添加</div>';
+    return;
+  }
+
+  container.innerHTML = catWorks.map(work => {
+    const hasThumb = work.thumb && work.thumb.trim() !== '';
+    return `
+      <div class="cat-work-card" data-work-id="${work.id}">
+        <div class="cat-work-card__thumb">
+          ${hasThumb
+            ? `<img src="${work.thumb}" alt="${work.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+               <div class="cat-work-card__thumb-placeholder" style="display:none;"><span>🖼</span>图片加载失败</div>`
+            : `<div class="cat-work-card__thumb-placeholder"><span>🖼</span>暂无缩略图</div>`
+          }
+          <div class="cat-work-card__thumb-overlay">
+            <button class="cat-work-card__thumb-btn" onclick="event.stopPropagation(); editWorkContent(${work.id})">
+              ✎ 修改内容
+            </button>
+            <button class="cat-work-card__thumb-btn cat-work-card__thumb-btn--delete" onclick="event.stopPropagation(); deleteWorkFromCategory(${work.id})">
+              ✕ 删除作品
+            </button>
+          </div>
+        </div>
+        <div class="cat-work-card__info">
+          <div class="cat-work-card__title">${work.title}</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="${work.link}" target="_blank" class="cat-work-card__link" style="flex: 1; margin-right: 8px;">${work.link ? work.link.replace('https://', '').substring(0, 35) + '...' : '无链接'}</a>
+            <span style="font-size: 11px; color: var(--fg-muted); white-space: nowrap; cursor: pointer; color: var(--primary);" onclick="editWorkContent(${work.id})">🖼 ${(work.images || []).length} 张</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateWorkThumb(workId) {
+  const work = works.find(w => w.id === workId);
+  if (!work) return;
+
+  showPrompt('请输入封面图URL\n\n粘贴图片链接后点击确定即可更新封面', work.thumb || '', function(newUrl) {
+    if (newUrl === null || newUrl === undefined) return;
+    const trimmed = newUrl.trim();
+    work.thumb = trimmed;
+    saveWorks();
+    renderCategoryDetailWorks(currentDetailCategory);
+    renderWorksList();
+    if (galleryWorkId !== null) {
+      renderGallery();
+    }
+  });
+}
+
+function editWorkContent(workId) {
+  openGalleryModal(workId);
+}
+
+function deleteWorkFromCategory(workId) {
+  const work = works.find(w => w.id === workId);
+  if (!work) return;
+  showConfirm('确定要删除作品「' + work.title + '」吗？\n删除后数据无法恢复。', function() {
+    works = works.filter(w => w.id !== workId);
+    saveWorks();
+    renderCategoryDetailWorks(currentDetailCategory);
+    renderWorksList();
+  });
+}
+
+// Gallery Modal
+let galleryWorkId = null;
+
+function openGalleryModal(workId) {
+  galleryWorkId = workId;
+  const work = works.find(w => w.id === workId);
+  if (!work) return;
+
+  // Ensure images array exists
+  if (!work.images) work.images = [];
+
+  document.getElementById('gallery-title').textContent = '编辑作品集 — ' + work.title;
+  renderGallery();
+  document.getElementById('gallery-modal').classList.add('modal-overlay--open');
+}
+
+function closeGalleryModal() {
+  document.getElementById('gallery-modal').classList.remove('modal-overlay--open');
+  galleryWorkId = null;
+  // Refresh views
+  if (currentDetailCategory) {
+    renderCategoryDetailWorks(currentDetailCategory);
+  }
+  renderWorksList();
+  renderCategoryList();
+}
+
+function renderGallery() {
+  const work = works.find(w => w.id === galleryWorkId);
+  if (!work) return;
+  const images = work.images || [];
+  const coverEl = document.getElementById('gallery-cover');
+  const gridEl = document.getElementById('gallery-grid');
+  const emptyEl = document.getElementById('gallery-empty');
+
+  // Render cover
+  const hasThumb = work.thumb && work.thumb.trim() !== '';
+  if (hasThumb) {
+    coverEl.innerHTML =
+      `<img src="${work.thumb}" alt="封面" onerror="this.style.display='none'">
+       <span class="gallery-modal__cover-label">封面图</span>
+       <button class="gallery-modal__cover-btn" onclick="document.getElementById('cover-file-input').click()">更换封面</button>`;
+  } else {
+    coverEl.innerHTML =
+      `<div class="gallery-cover-upload" onclick="document.getElementById('cover-file-input').click()">
+         <span class="gallery-cover-upload__icon">🖼</span>
+         <span class="gallery-cover-upload__text">点击上传封面图</span>
+       </div>`;
+  }
+
+  // Render gallery grid
+  if (images.length === 0) {
+    gridEl.style.display = 'none';
+    emptyEl.style.display = 'block';
+  } else {
+    gridEl.style.display = 'grid';
+    emptyEl.style.display = 'none';
+    gridEl.innerHTML = images.map((url, i) => `
+      <div class="gallery-item">
+        <img src="${url}" alt="图片 ${i+1}" onerror="this.parentElement.style.background='var(--surface-hover)';this.style.display='none'">
+        <button class="gallery-item__delete" onclick="deleteGalleryImage(${work.id}, ${i})" title="删除图片">✕</button>
+        <button class="gallery-item__set-cover" onclick="setCoverFromGallery(${work.id}, ${i})" title="设为封面">设为封面</button>
+      </div>
+    `).join('');
+  }
+}
+
+// Compress image and return base64 data URL
+function compressImage(file, maxWidth, quality) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var w = img.width;
+        var h = img.height;
+        // Scale down if wider than maxWidth
+        if (w > maxWidth) {
+          h = Math.round(h * (maxWidth / w));
+          w = maxWidth;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = function() { reject(new Error('图片加载失败')); };
+      img.src = e.target.result;
+    };
+    reader.onerror = function() { reject(new Error('文件读取失败')); };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Upload image to GitHub repo uploads/ folder, returns CDN URL
+function uploadImageToServer(dataUrl, filename) {
+  // If GitHub is configured, upload to repo
+  if (ghConfig.token && ghConfig.owner && ghConfig.repo) {
+    return uploadImageToGitHub(dataUrl, filename);
+  }
+  // Fallback: upload to local server
+  return uploadImageToLocal(dataUrl, filename);
+}
+
+function uploadImageToGitHub(dataUrl, filename) {
+  return new Promise(function(resolve, reject) {
+    var base64 = dataUrl.replace(/^data:image\/\w+;base64,/, '');
+    var fname = filename || ('image_' + Date.now() + '.jpg');
+    var path = 'uploads/' + fname;
+
+    var body = {
+      message: 'Upload image: ' + fname,
+      content: base64,
+      branch: ghConfig.branch
+    };
+
+    ghApiCall('PUT', path, body)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.content) {
+          // Use jsDelivr CDN for faster loading from GitHub
+          var cdnUrl = 'https://cdn.jsdelivr.net/gh/' + ghConfig.owner + '/' + ghConfig.repo + '@' + ghConfig.branch + '/' + path;
+          resolve(cdnUrl);
+        } else {
+          reject(new Error((data.message) || 'Upload failed'));
+        }
+      })
+      .catch(reject);
+  });
+}
+
+function uploadImageToLocal(dataUrl, filename) {
+  return new Promise(function(resolve, reject) {
+    var API_BASE = 'http://127.0.0.1:8765';
+    var parts = dataUrl.split(',');
+    var mime = parts[0].match(/:(.*?);/)[1] || 'image/jpeg';
+    var byteString = atob(parts[1]);
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) { ia[i] = byteString.charCodeAt(i); }
+    var blob = new Blob([ab], { type: mime });
+
+    var formData = new FormData();
+    formData.append('file', blob, filename || ('image_' + Date.now() + '.jpg'));
+
+    fetch(API_BASE + '/api/upload', {
+      method: 'POST',
+      body: formData
+    }).then(function(r) {
+      if (!r.ok) throw new Error('Upload failed: ' + r.status);
+      return r.json();
+    }).then(function(data) {
+      if (data.ok && data.url) resolve(data.url);
+      else reject(new Error(data.error || 'Upload failed'));
+    }).catch(reject);
+  });
+}
+
+// Handle gallery image file upload (multiple files) — uploads to server
+function handleGalleryFileUpload(event) {
+  var files = event.target.files;
+  if (!files || files.length === 0) return;
+
+  var work = works.find(function(w) { return w.id === galleryWorkId; });
+  if (!work) return;
+  if (!work.images) work.images = [];
+
+  var promises = [];
+  for (var i = 0; i < files.length; i++) {
+    (function(file, idx) {
+      promises.push(
+        compressImage(file, 1200, 0.82).then(function(dataUrl) {
+          return uploadImageToServer(dataUrl, 'gallery_' + work.id + '_' + Date.now() + '_' + idx + '.jpg');
+        }).then(function(serverUrl) {
+          work.images.push(serverUrl);
+          // If no cover yet, use first image
+          if (!work.thumb || work.thumb.trim() === '') {
+            work.thumb = serverUrl;
+          }
+        }).catch(function(err) {
+          console.warn('图片上传失败:', file.name, err);
+        })
+      );
+    })(files[i], i);
+  }
+
+  Promise.all(promises).then(function() {
+    saveWorks();
+    renderGallery();
+  });
+
+  // Reset input so the same file can be selected again
+  event.target.value = '';
+}
+
+// Handle cover file upload (single file)
+function handleCoverFileUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  var work = works.find(function(w) { return w.id === galleryWorkId; });
+  if (!work) return;
+
+  compressImage(file, 1400, 0.85).then(function(dataUrl) {
+    return uploadImageToServer(dataUrl, 'cover_' + work.id + '_' + Date.now() + '.jpg');
+  }).then(function(serverUrl) {
+    work.thumb = serverUrl;
+    saveWorks();
+    renderGallery();
+    if (currentDetailCategory) {
+      renderCategoryDetailWorks(currentDetailCategory);
+    }
+    renderWorksList();
+  }).catch(function(err) {
+    showAlert('封面图上传失败: ' + err.message);
+  });
+
+  event.target.value = '';
+}
+
+function deleteGalleryImage(workId, index) {
+  const work = works.find(w => w.id === workId);
+  if (!work || !work.images) return;
+  showConfirm('确定删除这张图片？', function() {
+    work.images.splice(index, 1);
+    saveWorks();
+    renderGallery();
+  });
+}
+
+function setCoverFromGallery(workId, index) {
+  const work = works.find(w => w.id === workId);
+  if (!work || !work.images || !work.images[index]) return;
+
+  work.thumb = work.images[index];
+  saveWorks();
+  renderGallery();
+  // Also refresh category detail if open
+  if (currentDetailCategory) {
+    renderCategoryDetailWorks(currentDetailCategory);
+  }
+}
+
+// Add new category
+function addCategory() {
+  const input = document.getElementById('new-category-name');
+  const name = input.value.trim();
+  if (!name) {
+    input.focus();
+    return;
+  }
+  if (categories.includes(name)) {
+    showAlert('该分类已存在');
+    input.focus();
+    return;
+  }
+  categories.push(name);
+  saveCategories();
+  renderCategoryList();
+  populateCategorySelect();
+  input.value = '';
+  input.focus();
+}
+
+// Edit (rename) category
+function editCategory(index) {
+  const oldName = categories[index];
+  showPrompt('修改分类名称', oldName, function(newName) {
+    if (newName === null || newName === undefined) return;
+    const trimmed = newName.trim();
+    if (!trimmed) {
+      showAlert('分类名称不能为空');
+      return;
+    }
+    if (trimmed !== oldName && categories.includes(trimmed)) {
+      showAlert('该分类名称已存在');
+      return;
+    }
+    // Update all works that use this category
+    if (trimmed !== oldName) {
+      works.forEach(w => {
+        if (w.category === oldName) w.category = trimmed;
+      });
+      saveWorks();
+      renderWorksList();
+    }
+    categories[index] = trimmed;
+    saveCategories();
+    renderCategoryList();
+    populateCategorySelect();
+  });
+}
+
+// Delete category
+function deleteCategory(index) {
+  const cat = categories[index];
+  const count = works.filter(w => w.category === cat).length;
+  let msg = `确定要删除分类「${cat}」吗？`;
+  if (count > 0) {
+    msg += `\n\n注意：有 ${count} 个作品属于此分类，删除后这些作品的分类将变为空。`;
+  }
+  showConfirm(msg, function() {
+    // Clear category from works that use it
+    works.forEach(w => {
+      if (w.category === cat) w.category = '';
+    });
+    saveWorks();
+    renderWorksList();
+
+    categories.splice(index, 1);
+    saveCategories();
+    renderCategoryList();
+    populateCategorySelect();
+  });
+}
+
+// Populate the work modal's category select from categories array
+function populateCategorySelect() {
+  const select = document.getElementById('work-category');
+  const currentValue = select.value;
+  select.innerHTML = '<option value="">请选择分类</option>';
+  categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });
+  // Restore selection if still valid
+  if (currentValue && categories.includes(currentValue)) {
+    select.value = currentValue;
+  }
+}
+
+// Allow Enter key to add category
+document.addEventListener('DOMContentLoaded', function() {
+  var catInput = document.getElementById('new-category-name');
+  if (catInput) {
+    catInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addCategory();
+      }
+    });
+  }
+});
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab--active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('tab-content--active'));
+    
+    tab.classList.add('tab--active');
+    document.getElementById(`tab-${tab.dataset.tab}`).classList.add('tab-content--active');
+  });
+});
+
+// Render works list
+function renderWorksList() {
+  const list = document.getElementById('works-list');
+  list.innerHTML = works.map(work => `
+    <div class="work-item">
+      <img src="${work.thumb}" alt="${work.title}" class="work-thumb" onerror="this.style.display='none'">
+      <div class="work-info">
+        <h3>${work.title}</h3>
+        <p>${work.category}</p>
+      </div>
+      <div class="work-actions">
+        <button class="btn btn--secondary btn--small" onclick="editWork(${work.id})">编辑</button>
+        <button class="btn btn--danger btn--small" onclick="deleteWork(${work.id})">删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Open work modal
+function openWorkModal(workId = null) {
+  const modal = document.getElementById('work-modal');
+  const form = document.getElementById('work-form');
+  const title = document.getElementById('modal-title');
+  
+  populateCategorySelect();
+  
+  if (workId) {
+    const work = works.find(w => w.id === workId);
+    title.textContent = '编辑作品';
+    document.getElementById('work-id').value = work.id;
+    document.getElementById('work-title').value = work.title;
+    document.getElementById('work-category').value = work.category;
+    document.getElementById('work-link').value = work.link;
+    document.getElementById('work-thumb').value = work.thumb;
+  } else {
+    title.textContent = '添加作品';
+    form.reset();
+    document.getElementById('work-id').value = '';
+  }
+  
+  modal.classList.add('modal-overlay--open');
+}
+
+// Close work modal
+function closeWorkModal() {
+  document.getElementById('work-modal').classList.remove('modal-overlay--open');
+}
+
+// Edit work
+function editWork(id) {
+  openWorkModal(id);
+}
+
+// Delete work
+function deleteWork(id) {
+  showConfirm('确定要删除这个作品吗？', function() {
+    works = works.filter(w => w.id !== id);
+    saveWorks();
+    renderWorksList();
+  });
+}
+
+// Save works
+function saveWorks() {
+  saveDataToServer();
+}
+
+// Cross-frame sync: broadcast data changes to parent/other frames
+function broadcastToFrames(key, value) {
+  try {
+    var msg = { type: 'arui-data-sync', key: key, value: value };
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage(msg, '*');
+    }
+    if (window.opener) {
+      window.opener.postMessage(msg, '*');
+    }
+    // Also broadcast to all frames in the same parent
+    try {
+      var frames = window.parent.frames;
+      for (var i = 0; i < frames.length; i++) {
+        if (frames[i] !== window) {
+          frames[i].postMessage(msg, '*');
+        }
+      }
+    } catch(e) {}
+  } catch(e) {
+    console.warn('Cross-frame broadcast failed:', e);
+  }
+}
+
+// Work form submit
+document.getElementById('work-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const id = document.getElementById('work-id').value;
+  const workData = {
+    title: document.getElementById('work-title').value,
+    category: document.getElementById('work-category').value,
+    link: document.getElementById('work-link').value,
+    thumb: document.getElementById('work-thumb').value
+  };
+  
+  if (id) {
+    // Update existing work
+    const index = works.findIndex(w => w.id === parseInt(id));
+    works[index] = { ...works[index], ...workData };
+  } else {
+    // Add new work
+    const newId = Math.max(...works.map(w => w.id)) + 1;
+    works.push({ id: newId, ...workData });
+  }
+  
+  saveWorks();
+  renderWorksList();
+  closeWorkModal();
+  // Refresh category detail view if open
+  if (currentDetailCategory) {
+    renderCategoryDetailWorks(currentDetailCategory);
+    renderCategoryList();
+  }
+});
+
+// Load profile form
+function loadProfileForm() {
+  document.getElementById('profile-name').value = profile.name;
+  document.getElementById('profile-title').value = profile.title;
+  document.getElementById('profile-gender').value = profile.gender;
+  document.getElementById('profile-age').value = profile.age;
+  document.getElementById('profile-email').value = profile.email;
+  document.getElementById('profile-phone').value = profile.phone;
+  document.getElementById('profile-direction').value = profile.direction;
+  document.getElementById('profile-experience').value = profile.experience;
+  document.getElementById('profile-location').value = profile.location;
+  document.getElementById('profile-bio').value = profile.bio;
+
+  // Load hero fields
+  document.getElementById('profile-heroBadge').value = profile.heroBadge || 'UI/UX Designer';
+  document.getElementById('profile-heroNameLeft').value = profile.heroNameLeft || profile.name;
+  document.getElementById('profile-heroNameRight').value = profile.heroNameRight || 'ARUI';
+  document.getElementById('profile-heroTagline').value = profile.heroTagline || '';
+
+  // Load brand fields
+  document.getElementById('profile-brandLeft').value = profile.brandLeft || profile.name;
+  document.getElementById('profile-brandRight').value = profile.brandRight || 'ARUI';
+
+  // Load section fields
+  document.getElementById('profile-sectionLabel').value = profile.sectionLabel || 'Selected Works';
+  document.getElementById('profile-sectionTitle').value = profile.sectionTitle || '作品集';
+
+  // Load avatar if exists
+  if (profile.avatar) {
+    currentAvatar = profile.avatar;
+    const preview = document.querySelector('.avatar-preview');
+    preview.innerHTML = `<img src="${profile.avatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius);">`;
+    preview.style.opacity = '1';
+  }
+}
+
+// Avatar upload handling
+let currentAvatar = null;
+
+document.getElementById('avatar-upload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // Check file type
+  if (!file.type.startsWith('image/')) {
+    showAlert('请选择图片文件');
+    return;
+  }
+
+  // Check file size (max 2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    showAlert('图片大小不能超过2MB');
+    return;
+  }
+
+  // Compress and upload to server
+  compressImage(file, 400, 0.85).then(function(dataUrl) {
+    return uploadImageToServer(dataUrl, 'avatar_' + Date.now() + '.jpg');
+  }).then(function(serverUrl) {
+    currentAvatar = serverUrl;
+    // Update preview
+    const preview = document.querySelector('.avatar-preview');
+    preview.innerHTML = `<img src="${currentAvatar}" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius);">`;
+    preview.style.opacity = '1';
+  }).catch(function(err) {
+    showAlert('头像上传失败: ' + err.message);
+  });
+
+  e.target.value = '';
+});
+
+// Save profile
+document.getElementById('profile-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const newAvatar = currentAvatar || profile.avatar || null;
+  
+  profile = {
+    name: document.getElementById('profile-name').value,
+    title: document.getElementById('profile-title').value,
+    gender: document.getElementById('profile-gender').value,
+    age: document.getElementById('profile-age').value,
+    email: document.getElementById('profile-email').value,
+    phone: document.getElementById('profile-phone').value,
+    direction: document.getElementById('profile-direction').value,
+    experience: document.getElementById('profile-experience').value,
+    location: document.getElementById('profile-location').value,
+    bio: document.getElementById('profile-bio').value,
+    avatar: newAvatar,
+    heroBadge: document.getElementById('profile-heroBadge').value,
+    heroNameLeft: document.getElementById('profile-heroNameLeft').value,
+    heroNameRight: document.getElementById('profile-heroNameRight').value,
+    heroTagline: document.getElementById('profile-heroTagline').value,
+    brandLeft: document.getElementById('profile-brandLeft').value,
+    brandRight: document.getElementById('profile-brandRight').value,
+    sectionLabel: document.getElementById('profile-sectionLabel').value,
+    sectionTitle: document.getElementById('profile-sectionTitle').value
+  };
+  
+  saveDataToServer();
+  // Update admin nav logo
+  var logo = document.getElementById('admin-nav-logo');
+  if (logo) {
+    logo.innerHTML = profile.brandLeft + '<span style="color: #ff8c42;">.</span>' + profile.brandRight;
+  }
+  showAlert('个人信息已保存!' + (newAvatar ? ' 头像已更新。' : ''));
+});
+
+// Export data
+function exportData() {
+  const data = {
+    works: works,
+    profile: profile,
+    categories: categories,
+    exportDate: new Date().toISOString()
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `arui-portfolio-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════
+   Login System
+   ══════════════════════════════════════════ */
+
+// Default admin credentials (in production, this should be server-side)
+const ADMIN_CREDENTIALS = {
+  username: 'admin',
+  password: 'admin'
+};
+
+// Check if user is logged in
+function isLoggedIn() {
+  return localStorage.getItem('arui_admin_loggedin') === 'true';
+}
+
+// Login
+function login(username, password) {
+  if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+    localStorage.setItem('arui_admin_loggedin', 'true');
+    return true;
+  }
+  return false;
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem('arui_admin_loggedin');
+  window.location.reload();
+}
+
+// Show/Hide login overlay
+function showLoginOverlay() {
+  document.getElementById('login-overlay').classList.remove('login-overlay--hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function hideLoginOverlay() {
+  document.getElementById('login-overlay').classList.add('login-overlay--hidden');
+  document.body.style.overflow = '';
+}
+
+// Forgot Password functions
+function openForgotPassword(e) {
+  e.preventDefault();
+  document.getElementById('forgot-modal').classList.add('forgot-modal--open');
+}
+
+function closeForgotPassword(e) {
+  e.preventDefault();
+  document.getElementById('forgot-modal').classList.remove('forgot-modal--open');
+  document.getElementById('forgot-success').classList.remove('forgot-success--show');
+  document.getElementById('forgot-form').reset();
+}
+
+// Login form submit
+document.getElementById('login-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errorEl = document.getElementById('login-error');
+  
+  if (login(username, password)) {
+    hideLoginOverlay();
+    errorEl.classList.remove('login-error--show');
+    // Clear form
+    document.getElementById('login-form').reset();
+    
+    // Show admin content immediately
+    document.querySelector('.admin-container > header').style.display = 'flex';
+    document.querySelector('.tabs').style.display = 'flex';
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+    
+    // Activate first tab
+    document.querySelector('.tab[data-tab="works"]').classList.add('tab--active');
+    document.getElementById('tab-works').classList.add('tab-content--active');
+  } else {
+    errorEl.classList.add('login-error--show');
+    // Shake animation
+    document.querySelector('.login-box').style.animation = 'shake 0.5s ease';
+    setTimeout(() => {
+      document.querySelector('.login-box').style.animation = '';
+    }, 500);
+  }
+});
+
+// Forgot password form submit
+document.getElementById('forgot-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('forgot-email').value.trim();
+  const successEl = document.getElementById('forgot-success');
+  
+  // Verify email matches the registered email
+  if (email === '1711930646@qq.com') {
+    successEl.classList.add('forgot-success--show');
+    document.getElementById('forgot-email').value = '';
+    
+    // In a real application, you would send an email here
+    console.log('Password reset email sent to:', email);
+  } else {
+    showAlert('该邮箱未注册，请使用注册邮箱：1711930646@qq.com');
+  }
+});
+
+// Add shake animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-10px); }
+    80% { transform: translateX(10px); }
+  }
+`;
+document.head.appendChild(style);
+
+// Initialize
+if (!isLoggedIn()) {
+  showLoginOverlay();
+} else {
+  hideLoginOverlay();
+}
+
+// Load data from server, then render all admin UI
+loadDataFromServer().then(function() {
+  renderWorksList();
+  renderCategoryList();
+  populateCategorySelect();
+  loadProfileForm();
+  // Populate GitHub config fields
+  if (ghConfig.token) document.getElementById('gh-token').value = ghConfig.token;
+  if (ghConfig.owner) document.getElementById('gh-owner').value = ghConfig.owner;
+  if (ghConfig.repo) document.getElementById('gh-repo').value = ghConfig.repo;
+  // Update admin nav logo
+  var logo = document.getElementById('admin-nav-logo');
+  if (logo) {
+    logo.innerHTML = (profile.brandLeft || profile.name) + '<span style="color: #ff8c42;">.</span>' + (profile.brandRight || 'ARUI');
+  }
+});
+</script>
+
+</body>
+</html>
