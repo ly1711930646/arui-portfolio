@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>阿睿ARUI - 后台管理</title>
+<meta name="referrer" content="no-referrer">
 <style>
 :root {
   --bg: #0b0b12;
@@ -1786,6 +1787,21 @@ function showAlert(message) {
   };
 }
 
+function showToast(message, type) {
+  // type: 'success', 'error', 'info'
+  var existing = document.getElementById('arui-toast');
+  if (existing) existing.remove();
+  var toast = document.createElement('div');
+  toast.id = 'arui-toast';
+  toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:8px;font-size:13px;z-index:99999;transition:opacity 0.3s;max-width:400px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
+  var colors = { success: '#22c55e', error: '#ef4444', info: '#3b82f6' };
+  toast.style.background = colors[type] || colors.info;
+  toast.style.color = '#fff';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 300); }, 3000);
+}
+
 function showPrompt(message, defaultValue, onConfirm) {
   var overlay = document.getElementById('custom-dialog-overlay');
   var msgEl = document.getElementById('custom-dialog-message');
@@ -1875,7 +1891,7 @@ var ghConfig = {
   dataSha: null  // SHA of data.json for updates
 };
 
-// Load GitHub config from localStorage
+// Load GitHub config from localStorage + auto-detect from GitHub Pages URL
 (function loadGhConfig() {
   try {
     var saved = localStorage.getItem('arui_gh_config');
@@ -1886,6 +1902,16 @@ var ghConfig = {
       ghConfig.repo = c.repo || '';
     }
   } catch(e) {}
+
+  // Auto-detect owner/repo from GitHub Pages URL: https://{owner}.github.io/{repo}/admin.html
+  var hostname = window.location.hostname;
+  var pathMatch = window.location.pathname.match(/^\/([^\/]+)\//);
+  if (hostname.endsWith('.github.io') && pathMatch) {
+    var detectedOwner = hostname.replace('.github.io', '');
+    var detectedRepo = pathMatch[1];
+    if (!ghConfig.owner) ghConfig.owner = detectedOwner;
+    if (!ghConfig.repo) ghConfig.repo = detectedRepo;
+  }
 })();
 
 function ghApiUrl(path) {
@@ -1958,7 +1984,13 @@ function testGitHubConnection() {
 // Save all data to GitHub
 function saveDataToServer() {
   if (!ghConfig.token || !ghConfig.owner || !ghConfig.repo) {
-    // Fallback: try local server
+    // On GitHub Pages, local server won't exist — warn the user
+    var isGitHubPages = window.location.hostname.endsWith('.github.io');
+    if (isGitHubPages) {
+      showAlert('请先在「部署设置」中填写 GitHub Token，才能保存数据。\n\n当前检测到仓库：' + (ghConfig.owner || '?') + '/' + (ghConfig.repo || '?') + '\n只需填写 Token 即可。');
+      return;
+    }
+    // Fallback: try local server (only works in local dev)
     saveDataLocal();
     return;
   }
@@ -1972,6 +2004,8 @@ function saveDataToServer() {
     branch: ghConfig.branch
   };
 
+  showToast('正在保存数据...', 'info');
+
   // Need SHA for updates
   var doSave = function(sha) {
     if (sha) body.sha = sha;
@@ -1979,10 +2013,12 @@ function saveDataToServer() {
       return r.json().then(function(data) {
         if (r.ok && data.content) {
           ghConfig.dataSha = data.content.sha;
+          showToast('数据已保存到 GitHub', 'success');
           broadcastToFrames('arui_works', JSON.stringify(works));
           broadcastToFrames('arui_profile', JSON.stringify(profile));
           broadcastToFrames('arui_categories', JSON.stringify(categories));
         } else {
+          showToast('保存失败: ' + (data.message || '未知错误'), 'error');
           console.warn('GitHub save failed:', data);
         }
       });
@@ -2003,6 +2039,7 @@ function saveDataToServer() {
         return doSave(ghConfig.dataSha);
       })
       .catch(function(e) {
+        showToast('保存失败: ' + e.message, 'error');
         console.warn('GitHub save failed:', e);
       });
   }
@@ -2353,7 +2390,12 @@ function uploadImageToServer(dataUrl, filename) {
   if (ghConfig.token && ghConfig.owner && ghConfig.repo) {
     return uploadImageToGitHub(dataUrl, filename);
   }
-  // Fallback: upload to local server
+  // On GitHub Pages without token, cannot upload
+  var isGitHubPages = window.location.hostname.endsWith('.github.io');
+  if (isGitHubPages) {
+    return Promise.reject(new Error('请先在「部署设置」中填写 GitHub Token 后再上传图片'));
+  }
+  // Fallback: upload to local server (only works in local dev)
   return uploadImageToLocal(dataUrl, filename);
 }
 
