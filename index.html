@@ -1,0 +1,2462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阿睿ARUI - UI/UX Designer Portfolio</title>
+<meta name="description" content="阿睿ARUI - UI/UX设计师作品集，涵盖APP设计、网页设计、HMI车机设计、B端设计等领域">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── Seed Tokens (for Nudges) ─── */
+:root {
+  --seed-bg: #0b0b12;
+  --seed-fg: #e8e8f0;
+  --seed-primary: #ff8c42;
+  --seed-accent: #ff6b6b;
+  --seed-surface: #151520;
+  --seed-radius: 12;
+
+  /* Derived tokens */
+  --bg: var(--seed-bg);
+  --fg: var(--seed-fg);
+  --fg-muted: #7a7a92;
+  --primary: var(--seed-primary);
+  --accent: var(--seed-accent);
+  --surface: var(--seed-surface);
+  --surface-hover: #1e1e2e;
+  --surface-glass: rgba(20, 20, 35, 0.72);
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  --radius: calc(var(--seed-radius) * 1px);
+  --radius-sm: calc(var(--seed-radius) * 0.6 * 1px);
+  --radius-lg: calc(var(--seed-radius) * 1.6 * 1px);
+
+  --primary-glow: color-mix(in srgb, var(--primary) 30%, transparent);
+  --primary-soft: color-mix(in srgb, var(--primary) 12%, transparent);
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-hover);
+
+  --density-mode: Balanced;
+
+  --nav-height: 64px;
+  --section-gap: 120px;
+  --grid-gap: 24px;
+  --container: 1280px;
+  --card-info-padding: 20px;
+}
+
+/* Density mode adjustments */
+:root:has([data-density="Compact"]),
+[data-density="Compact"] {
+  --section-gap: 80px;
+  --grid-gap: 16px;
+  --card-info-padding: 14px;
+}
+:root:has([data-density="Spacious"]),
+[data-density="Spacious"] {
+  --section-gap: 160px;
+  --grid-gap: 32px;
+  --card-info-padding: 28px;
+}
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ─── Particle Canvas ─── */
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ─── Navigation ─── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+}
+
+.nav--scrolled {
+  background: var(--surface-glass);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.nav__logo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.nav__logo span:nth-child(2) {
+  color: var(--primary);
+}
+
+.nav__links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav__links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+  transition: color 0.25s ease;
+  position: relative;
+}
+
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.nav__links a.active {
+  color: var(--fg);
+}
+
+.nav__links a.active::after {
+  width: 100%;
+}
+
+.nav__links a:hover {
+  color: var(--fg);
+}
+
+.nav__links a:hover::after {
+  width: 100%;
+}
+
+.nav__cta {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: 1px solid var(--border-hover);
+  color: var(--fg);
+  transition: all 0.3s ease;
+  background: transparent;
+  cursor: pointer;
+}
+
+.nav__cta:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ─── Hero Section ─── */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  padding: 6px 16px;
+  border-radius: 50px;
+  border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+  background: var(--primary-soft);
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.hero__badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+}
+
+.hero__name {
+  font-family: var(--font-display);
+  font-size: clamp(56px, 10vw, 96px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero__name span:last-child {
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, var(--accent)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero__subtitle {
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 300;
+  color: var(--fg-muted);
+  letter-spacing: -0.01em;
+  max-width: 540px;
+  margin: 0 auto 48px;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+
+.hero__scroll {
+  position: absolute;
+  bottom: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards;
+  cursor: pointer;
+}
+
+.hero__scroll-mouse {
+  width: 26px;
+  height: 42px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 13px;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.hero__scroll:hover .hero__scroll-mouse {
+  border-color: var(--primary);
+}
+
+.hero__scroll-wheel {
+  width: 3px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 2px;
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: wheelScroll 2s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--primary-glow);
+}
+
+@keyframes wheelScroll {
+  0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  50% { opacity: 0.3; transform: translateX(-50%) translateY(10px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.hero__scroll-text {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  transition: color 0.3s ease;
+}
+
+.hero__scroll:hover .hero__scroll-text {
+  color: var(--primary);
+}
+
+.hero__scroll-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--fg-muted);
+  animation: arrowBounce 2s ease-in-out infinite;
+  transition: color 0.3s ease;
+}
+
+.hero__scroll:hover .hero__scroll-arrow {
+  color: var(--primary);
+}
+
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.6); transform-origin: top; }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ─── Main Content ─── */
+.main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 48px var(--section-gap);
+}
+
+/* ─── Section Header ─── */
+.section-header {
+  margin-bottom: 32px;
+}
+
+.section-header__label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.section-header__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--fg);
+}
+
+/* ─── Filter Bar ─── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 48px;
+  padding-bottom: 4px;
+}
+
+.filter-pill {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.filter-pill:hover {
+  color: var(--fg);
+  border-color: var(--border-hover);
+  background: var(--surface);
+}
+
+.filter-pill--active {
+  color: var(--bg);
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.filter-pill--active:hover {
+  color: var(--bg);
+  background: var(--primary);
+}
+
+/* ─── Scroll Hint ─── */
+.scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 0 16px;
+  opacity: 0;
+  animation: hintFadeIn 0.8s ease 1.2s forwards;
+}
+
+.scroll-hint__icon {
+  width: 28px;
+  height: 28px;
+  color: var(--primary);
+  animation: hintBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px var(--primary-glow));
+}
+
+.scroll-hint__text {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes hintFadeIn {
+  to { opacity: 1; }
+}
+
+/* Hide scroll hint once user scrolls past it */
+.scroll-hint--hidden {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 0.4s ease, height 0.4s ease, padding 0.4s ease;
+}
+
+/* ─── Works Grid ─── */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+/* ─── Work Card ─── */
+.work-card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s ease,
+              border-color 0.4s ease;
+  opacity: 0;
+  transform: translateY(32px);
+  animation: cardFallbackReveal 0.6s ease 1.8s forwards;
+}
+
+@keyframes cardFallbackReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.work-card--visible {
+  opacity: 1;
+  transform: translateY(0);
+  animation: none;
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.work-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--border-hover);
+}
+
+.work-card:active {
+  transform: translateY(-2px) scale(1.0);
+}
+
+.work-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.work-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.work-card:hover .work-card__img {
+  transform: scale(1.08);
+}
+
+.work-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(11, 11, 18, 0.85) 0%,
+    rgba(11, 11, 18, 0.2) 50%,
+    transparent 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.work-card:hover .work-card__overlay {
+  opacity: 1;
+}
+
+.work-card__view {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg);
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  transform: translateY(12px);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.3s ease;
+}
+
+.work-card:hover .work-card__view {
+  transform: translateY(0);
+}
+
+.work-card__view:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.work-card__info {
+  padding: var(--card-info-padding);
+}
+
+.work-card__category {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.work-card__title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: var(--fg);
+  transition: color 0.3s ease;
+}
+
+.work-card:hover .work-card__title {
+  color: var(--primary);
+}
+
+/* ─── Card hide animation for filter ─── */
+.work-card--hiding {
+  opacity: 0;
+  transform: scale(0.92) translateY(16px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.work-card--showing {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease 0.05s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+}
+
+/* ─── Profile Section ─── */
+.profile-section {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: var(--section-gap) 48px var(--section-gap);
+}
+
+.profile-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 48px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.profile-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.profile-avatar {
+  width: 280px;
+  height: 320px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary-soft), var(--accent-soft));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.profile-avatar__placeholder {
+  font-size: 120px;
+  font-weight: 700;
+  color: var(--primary);
+  opacity: 0.3;
+  font-family: var(--font-display);
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 24px;
+}
+
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+
+.profile-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--primary);
+  letter-spacing: 0.02em;
+}
+
+.profile-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.profile-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-item__label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.profile-item__value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg);
+  line-height: 1.5;
+}
+
+.profile-item__value a {
+  color: var(--primary);
+  transition: opacity 0.3s ease;
+}
+
+.profile-item__value a:hover {
+  opacity: 0.7;
+}
+
+.profile-bio {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fg-muted);
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
+  .profile-card {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .profile-avatar {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-section { padding: var(--section-gap) 24px var(--section-gap); }
+  .profile-card { padding: 32px 24px; }
+  .profile-details { grid-template-columns: 1fr; }
+  .profile-name { font-size: 24px; }
+}
+
+/* ─── Footer ─── */
+.footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 48px;
+  text-align: center;
+}
+
+.footer__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer__text {
+  font-size: 13px;
+  color: var(--fg-muted);
+  letter-spacing: 0;
+}
+
+/* ─── Back to Top Button ─── */
+.back-to-top {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(255, 140, 66, 0.15);
+  border: 1px solid rgba(255, 140, 66, 0.4);
+  border-radius: 24px;
+  color: #ff8c42;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease, background 0.25s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.back-to-top--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.back-to-top:hover {
+  background: rgba(255, 140, 66, 0.3);
+  border-color: rgba(255, 140, 66, 0.7);
+}
+.back-to-top svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .back-to-top { bottom: 24px; right: 20px; padding: 10px 16px; font-size: 13px; }
+}
+
+/* ─── Work Detail Fullscreen Gallery ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(4, 4, 10, 0.97);
+  backdrop-filter: blur(32px) saturate(1.1);
+  -webkit-backdrop-filter: blur(32px) saturate(1.1);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.modal-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Bar */
+.modal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.modal-topbar__info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-topbar__category {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: 50px;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+  background: var(--primary-soft);
+}
+
+.modal-topbar__title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fg);
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-topbar__counter {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.modal-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: var(--fg);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.modal-close:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Gallery Stage */
+.modal-gallery {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.modal-gallery__img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: var(--radius);
+  margin: auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.modal-gallery__img--loading {
+  opacity: 0.3;
+  transform: scale(0.97);
+}
+
+.modal-gallery__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--fg-muted);
+  font-size: 14px;
+}
+
+.modal-gallery__placeholder-icon {
+  font-size: 48px;
+  opacity: 0.3;
+}
+
+/* Navigation Arrows */
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: var(--fg);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  z-index: 5;
+}
+
+.modal-nav:hover {
+  background: rgba(255,255,255,0.14);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.modal-nav--prev { left: 20px; }
+.modal-nav--next { right: 20px; }
+
+.modal-nav--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Bottom Bar */
+.modal-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  flex-shrink: 0;
+}
+
+.modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 10px 24px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+}
+
+.modal-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.modal-btn--primary {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.modal-btn--primary:hover {
+  box-shadow: 0 0 24px color-mix(in srgb, var(--primary) 40%, transparent);
+  transform: translateY(-1px);
+}
+
+.modal-btn--secondary {
+  background: rgba(255,255,255,0.06);
+  color: var(--fg);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.modal-btn--secondary:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.25);
+}
+
+/* Thumbnail strip */
+.modal-thumbs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 0 24px 16px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.modal-thumbs::-webkit-scrollbar { height: 0; }
+
+.modal-thumb {
+  width: 56px;
+  height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+  opacity: 0.5;
+}
+
+.modal-thumb:hover {
+  opacity: 0.8;
+}
+
+.modal-thumb--active {
+  border-color: var(--primary);
+  opacity: 1;
+}
+
+.modal-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-topbar { padding: 12px 16px; }
+  .modal-topbar__title { max-width: 140px; font-size: 13px; }
+  .modal-nav { width: 40px; height: 40px; font-size: 16px; }
+  .modal-nav--prev { left: 8px; }
+  .modal-nav--next { right: 8px; }
+  .modal-bottombar { padding: 12px 16px; gap: 8px; }
+  .modal-btn { padding: 8px 16px; font-size: 12px; }
+  .modal-thumbs { padding: 0 16px 12px; }
+  .modal-thumb { width: 44px; height: 32px; }
+}
+
+/* ─── Work Showcase (Full-page vertical gallery) ─── */
+.showcase-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #04040a;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.showcase-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.showcase-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  flex-shrink: 0;
+  background: rgba(4, 4, 10, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  z-index: 10;
+}
+
+.showcase-topbar__info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.showcase-topbar__category {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: 50px;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+  background: var(--primary-soft);
+}
+
+.showcase-topbar__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.showcase-topbar__count {
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-left: 4px;
+}
+
+.showcase-topbar__hint {
+  font-size: 11px;
+  color: var(--fg-muted);
+  opacity: 0.6;
+  margin-left: 12px;
+  letter-spacing: 0.04em;
+}
+
+.showcase-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: var(--fg);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.showcase-close:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.showcase-body {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.showcase-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.showcase-body::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.03);
+}
+
+.showcase-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 4px;
+}
+
+.showcase-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.showcase-img {
+  width: 100%;
+  max-width: 1200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  object-fit: contain;
+}
+
+.showcase-img + .showcase-img {
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.showcase-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+  color: var(--fg-muted);
+  font-size: 15px;
+  padding: 60px 20px;
+}
+
+.showcase-empty__icon {
+  font-size: 56px;
+  opacity: 0.25;
+}
+
+.showcase-bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 28px;
+  flex-shrink: 0;
+  background: rgba(4, 4, 10, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.showcase-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 10px 24px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+}
+
+.showcase-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.showcase-btn--primary {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.showcase-btn--primary:hover {
+  box-shadow: 0 0 24px color-mix(in srgb, var(--primary) 40%, transparent);
+  transform: translateY(-1px);
+}
+
+.showcase-btn--secondary {
+  background: rgba(255,255,255,0.06);
+  color: var(--fg);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.showcase-btn--secondary:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.25);
+}
+
+@media (max-width: 768px) {
+  .showcase-topbar { padding: 10px 16px; }
+  .showcase-topbar__title { font-size: 14px; }
+  .showcase-bottombar { padding: 10px 16px; }
+  .showcase-btn { padding: 8px 16px; font-size: 12px; }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .works-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .nav { padding: 0 32px; }
+  .main { padding: 0 32px var(--section-gap); }
+}
+
+@media (max-width: 768px) {
+  .nav { padding: 0 24px; }
+  .nav__links {
+    display: flex;
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--surface-glass);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    padding: 16px 24px 24px;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 99;
+  }
+  .nav__links--open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav__hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 101;
+  }
+  .nav__hamburger span {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: var(--fg);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .nav__hamburger--open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav__hamburger--open span:nth-child(2) { opacity: 0; }
+  .nav__hamburger--open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+  .main { padding: 0 20px 80px; }
+  .works-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .hero__name { font-size: clamp(40px, 12vw, 64px); }
+  .footer { padding: 32px 24px; }
+  .footer__inner { flex-direction: column; gap: 16px; }
+  .filter-bar { gap: 6px; }
+  .filter-pill { padding: 6px 14px; font-size: 12px; }
+  :root { --section-gap: 80px; }
+}
+
+@media (min-width: 769px) {
+  .nav__hamburger { display: none; }
+}
+
+@media (max-width: 480px) {
+  .works-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .work-card__info { padding: 16px; }
+}
+
+/* ─── Utilities ─── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- Particle Background -->
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+<!-- Navigation -->
+<nav class="nav" id="nav" role="navigation" aria-label="主导航" data-component="nav">
+  <div class="nav__logo"><span data-profile-field="brandLeft">阿睿</span><span>.</span><span data-profile-field="brandRight">ARUI</span></div>
+  <ul class="nav__links">
+    <li><a href="#hero" class="active">首页</a></li>
+    <li><a href="admin.html">后台管理</a></li>
+  </ul>
+  <button class="nav__hamburger" id="nav-toggle" aria-label="打开导航菜单" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a href="#works" class="nav__cta">查看简介</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero" data-component="hero">
+  <div class="hero__badge" data-profile-field="heroBadge">UI/UX Designer</div>
+  <h1 class="hero__name"><span data-profile-field="heroNameLeft">阿睿</span><span data-profile-field="heroNameRight">ARUI</span></h1>
+  <p class="hero__subtitle" data-profile-field="heroTagline">专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。</p>
+  <div class="hero__scroll" onclick="document.getElementById('works').scrollIntoView({behavior:'smooth'})" role="button" aria-label="向下滚动到作品集">
+    <div class="hero__scroll-mouse">
+      <div class="hero__scroll-wheel"></div>
+    </div>
+    <span class="hero__scroll-text">向下滚动</span>
+    <svg class="hero__scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </div>
+</section>
+
+<!-- Main Content -->
+<main class="main" id="works" data-component="works">
+  <!-- Profile Section -->
+  <section class="profile-section" data-component="profile">
+    <div class="profile-card">
+      <div class="profile-avatar">
+        <div class="profile-avatar__placeholder">AR</div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-header">
+          <h2 class="profile-name" data-profile-field="name">阿睿 ARUI</h2>
+          <p class="profile-title" data-profile-field="title">UI/UX Designer</p>
+        </div>
+        
+        <div class="profile-details">
+          <div class="profile-item">
+            <span class="profile-item__label">姓名</span>
+            <span class="profile-item__value" data-profile-field="name">阿睿</span>
+          </div>
+          
+          <div class="profile-item">
+            <span class="profile-item__label">性别</span>
+            <span class="profile-item__value" data-profile-field="gender">男</span>
+          </div>
+          
+          <div class="profile-item">
+            <span class="profile-item__label">年龄</span>
+            <span class="profile-item__value"><span data-profile-field="age">28</span>岁</span>
+          </div>
+          
+          <div class="profile-item">
+            <span class="profile-item__label">联系方式</span>
+            <span class="profile-item__value">
+              <a href="mailto:" data-profile-link="email">arui@example.com</a>
+            </span>
+          </div>
+          
+          <div class="profile-item">
+            <span class="profile-item__label">电话</span>
+            <span class="profile-item__value">
+              <a href="tel:" data-profile-link="phone">+86 138-0013-8000</a>
+            </span>
+          </div>
+          
+          <div class="profile-item">
+            <span class="profile-item__label">求职方向</span>
+            <span class="profile-item__value" data-profile-field="direction">UI/UX设计师 · 产品设计师</span>
+          </div>
+          
+          <div class="profile-item">
+            <span class="profile-item__label">工作经验</span>
+            <span class="profile-item__value" data-profile-field="experience">5年</span>
+          </div>
+          
+          <div class="profile-item">
+            <span class="profile-item__label">所在地</span>
+            <span class="profile-item__value" data-profile-field="location">北京</span>
+          </div>
+        </div>
+        
+        <div class="profile-bio" data-profile-field="bio">
+          专注APP、网页、车机及多领域数字体验设计,擅长将创意与用户需求结合,打造直观、美观且易用的产品界面。具备丰富的B端和C端项目经验,致力于通过设计提升产品价值和用户体验。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <header class="section-header" data-od-id="works-header">
+    <p class="section-header__label" data-profile-field="sectionLabel">Selected Works</p>
+    <h2 class="section-header__title" data-profile-field="sectionTitle">作品集</h2>
+  </header>
+
+  <!-- Filter -->
+  <div class="filter-bar" id="filter-bar" role="tablist" aria-label="作品分类筛选" data-component="filter-bar" data-od-id="filter-bar">
+    <!-- Dynamically generated from localStorage categories -->
+  </div>
+
+  <!-- Scroll Hint -->
+  <div class="scroll-hint" id="scroll-hint" data-component="scroll-hint">
+    <svg class="scroll-hint__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+    <span class="scroll-hint__text">向下滑动浏览更多作品</span>
+  </div>
+
+  <!-- Works Grid -->
+  <div class="works-grid" id="works-grid" data-component="works-grid" data-od-id="works-grid"></div>
+</main>
+
+<!-- Footer -->
+<footer class="footer" data-component="footer" data-od-id="footer">
+  <div class="footer__inner">
+    <p class="footer__text">&copy; <span id="year"></span> <span data-profile-field="brandLeft">李杨</span>. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到首页">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+  回到首页
+</button>
+
+<!-- Work Detail Fullscreen Gallery Modal -->
+<div class="modal-overlay" id="modal-overlay" data-component="modal" aria-hidden="true" role="dialog" aria-label="作品全屏画廊">
+  <div class="modal-content">
+    <!-- Top Bar -->
+    <div class="modal-topbar">
+      <div class="modal-topbar__info">
+        <span class="modal-topbar__category" id="modal-category"></span>
+        <span class="modal-topbar__title" id="modal-title"></span>
+        <span class="modal-topbar__counter" id="modal-counter"></span>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="关闭画廊">&times;</button>
+    </div>
+
+    <!-- Gallery Stage -->
+    <div class="modal-gallery" id="modal-gallery">
+      <img class="modal-gallery__img" id="modal-img" src="" alt="" referrerpolicy="no-referrer">
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="modal-bottombar">
+      <button class="modal-btn modal-btn--primary" id="modal-showcase-btn" onclick="openShowcase()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        滚动查看
+      </button>
+      <button class="modal-btn modal-btn--secondary" id="modal-close-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        返回作品集
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Work Showcase (Full-page vertical gallery) -->
+<div class="showcase-overlay" id="showcase-overlay" aria-hidden="true" role="dialog" aria-label="作品完整展示">
+  <div class="showcase-topbar">
+    <div class="showcase-topbar__info">
+      <span class="showcase-topbar__category" id="showcase-category"></span>
+      <span class="showcase-topbar__title" id="showcase-title"></span>
+      <span class="showcase-topbar__count" id="showcase-count"></span>
+      <span class="showcase-topbar__hint">滚动查看</span>
+    </div>
+    <button class="showcase-close" id="showcase-close" aria-label="关闭展示">&times;</button>
+  </div>
+  <div class="showcase-body" id="showcase-body"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   Portfolio Data - Load from localStorage or use default
+   ═══════════════════════════════════════════ */
+const DEFAULT_WORKS = [
+  { id:1,  title:"JunyStar-Web Design",           category:"网页设计",      link:"https://www.zcool.com.cn/work/ZNzMzNzE1NTI=.html",     thumb:"https://img.zcool.cn/community/69ca0ca586e7bp8sef9087620.png?k=a71d328954003528b94c7a151fb81da8&t=6a302180" },
+  { id:3,  title:"数藏交流平台-Digital Link",      category:"APP设计",       link:"https://www.zcool.com.cn/work/ZNjc2MTM5NDQ=.html",     thumb:"https://img.zcool.cn/community/031fovecdy8oufiyrwdhlbc3231.png?k=5365554b27b1effa70918cc12512219f&t=6a302180" },
+  { id:4,  title:"It's Me APP",                   category:"APP设计",       link:"https://www.zcool.com.cn/work/ZNjc1NjA4MDA=.html",     thumb:"https://img.zcool.cn/community/031j5civkdef3ol4oro08tq3536.png?k=8dd84fc1f8b7569eea99661472399bdb&t=6a302180" },
+  { id:5,  title:"HMI Concept Design-2023",       category:"跨境电商设计",  link:"https://www.zcool.com.cn/work/ZNjczMjEzMjg=.html",     thumb:"https://img.zcool.cn/community/031ntpqe48b0q6namycrn1n3334.png?k=ddcf0b582fde83d942c42447c9d8d4b7&t=6a302180" },
+  { id:6,  title:"2022 设计作品合集",              category:"综合设计",      link:"https://www.zcool.com.cn/work/ZNjQ0Mjk2MDA=.html",     thumb:"https://img.zcool.cn/community/0311esuwxi9z9bpryney0e93332.png?k=73fb426fff3073b0eaf604d25f5139c5&t=6a302180" },
+  { id:7,  title:"MOTA 饮水智能面板方案设计",       category:"画册设计",      link:"https://www.zcool.com.cn/work/ZNjQzMDY4NzI=.html",     thumb:"https://img.zcool.cn/community/031cdn8ibxxarryydglvhjj3938.png?k=5f416a89e08d93a87ea3a2af37b25b3f&t=6a302180" },
+  { id:8,  title:"About-网页设计集",                category:"网页设计",      link:"https://www.zcool.com.cn/work/ZNjIwNTE1NjA=.html",     thumb:"https://img.zcool.cn/community/031ny6e4t6jigh0odporbn43838.png?k=d4a376d217ac455cead631d682a9bd99&t=6a302180" },
+  { id:9,  title:"About-B端项目合集",               category:"B端设计",       link:"https://www.zcool.com.cn/work/ZNjE4NDE1NzY=.html",     thumb:"https://img.zcool.cn/community/031mdeexjvid9j6ii6kavth3230.png?k=82917779d7da8dd8533a75833daeb7ba&t=6a302180" },
+  { id:10, title:"一些杂货整理",                     category:"综合设计",      link:"https://www.zcool.com.cn/work/ZNjA3NDAwNDg=.html",     thumb:"https://img.zcool.cn/community/031g8zjyiw4onwbnumex2wb3939.png?k=013f30592b993180235b7c5d84c2de3c&t=6a302180" },
+  { id:11, title:"比亚迪车机主题设计-蓝色星河",      category:"跨境电商设计",  link:"https://www.zcool.com.cn/work/ZNjAyNTk1ODQ=.html",     thumb:"https://img.zcool.cn/community/031regd3ttcu1qvpi9ceegd3035.png?k=f010d9fdfc87f509a8f3a2734e943c9b&t=6a302180" },
+  { id:12, title:"空状态插画设计-飞书",              category:"国内电商设计",  link:"https://www.zcool.com.cn/work/ZNTk3MTE5OTI=.html",     thumb:"https://img.zcool.cn/community/031pcs7wn8lrh4kckxo68qm3833.png?k=7757215993bd12ef5019ee6920f14a11&t=6a302180" },
+  { id:13, title:"智选小程序-教学管理工具",           category:"APP设计",       link:"https://www.zcool.com.cn/work/ZNTYwMDc3NzY=.html",     thumb:"https://img.zcool.cn/community/031i0eo3n0f4nlnexmpvfrj3235.png?k=ca2dae58484bed3aa561796439ce5338&t=6a302180" },
+  { id:14, title:"云及数据大屏编辑平台",              category:"B端设计",       link:"https://www.zcool.com.cn/work/ZNTQ2MzgyOTI=.html",     thumb:"https://img.zcool.cn/community/011fa96119e95f11013eaf70f2d098.jpg?k=db128bd155f61acf242f18d70fd38e1b&t=6a302180" }
+];
+
+// Load works — defaults used until server data arrives
+let WORKS = [...DEFAULT_WORKS];
+
+// Load categories from server or use default
+const DEFAULT_CATEGORIES = ["APP设计", "网页设计", "B端设计", "跨境电商设计", "国内电商设计", "画册设计", "包装设计"];
+let CATEGORIES = [...DEFAULT_CATEGORIES];
+
+// Generate filter bar pills dynamically
+(function() {
+  var bar = document.getElementById('filter-bar');
+  if (!bar) return;
+  var html = '<button class="filter-pill filter-pill--active" role="tab" aria-selected="true" data-category="全部">全部</button>';
+  CATEGORIES.forEach(function(cat) {
+    html += '<button class="filter-pill" role="tab" aria-selected="false" data-category="' + cat + '">' + cat + '</button>';
+  });
+  bar.innerHTML = html;
+})();
+
+// Default profile data
+const DEFAULT_PROFILE = {
+  name: '阿睿',
+  title: 'UI/UX Designer',
+  gender: '男',
+  age: 28,
+  email: 'arui@example.com',
+  phone: '+86 138-0013-8000',
+  direction: 'UI/UX设计师 · 产品设计师',
+  experience: '5年',
+  location: '北京',
+  bio: '专注APP、网页、车机及多领域数字体验设计,擅长将创意与用户需求结合,打造直观、美观且易用的产品界面。具备丰富的B端和C端项目经验,致力于通过设计提升产品价值和用户体验。',
+  avatar: null,
+  heroBadge: 'UI/UX Designer',
+  heroNameLeft: '阿睿',
+  heroNameRight: 'ARUI',
+  heroTagline: '专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。',
+  brandLeft: '阿睿',
+  brandRight: 'ARUI',
+  sectionLabel: 'Selected Works',
+  sectionTitle: '作品集'
+};
+
+// Load profile — defaults used until server data arrives
+let PROFILE = DEFAULT_PROFILE;
+
+/* ═══════════════════════════════════════════
+   Particle Canvas
+   ═══════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles, mouse;
+  const isMobile = window.innerWidth < 768;
+  const PARTICLE_COUNT = isMobile ? 40 : 80;
+  const CONNECT_DIST = 160;
+  const MOUSE_RADIUS = 180;
+
+  /* ── Mouse trail & cursor glow ── */
+  var trails = [];
+  var smoothMouse = { x: -9999, y: -9999 };
+  var cursorActive = true;
+  var cursorPulse = 0;
+  var lastTrailPos = null;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function createParticles() {
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2 + 0.5,
+        alpha: Math.random() * 0.4 + 0.1
+      });
+    }
+  }
+
+  mouse = { x: -9999, y: -9999 };
+
+  function onMouseMove(e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  }
+
+  function onTouchMove(e) {
+    if (e.touches.length) {
+      mouse.x = e.touches[0].clientX;
+      mouse.y = e.touches[0].clientY;
+    }
+  }
+
+  function onMouseLeave() {
+    mouse.x = -9999;
+    mouse.y = -9999;
+  }
+
+  window.addEventListener('mousemove', onMouseMove, { passive: true });
+  window.addEventListener('touchmove', onTouchMove, { passive: true });
+  window.addEventListener('mouseleave', onMouseLeave);
+
+  /* Activate cursor trail on enter, deactivate on leave */
+  window.addEventListener('mouseenter', function() { cursorActive = true; });
+  window.addEventListener('touchstart', function() { cursorActive = true; }, { passive: true });
+  window.addEventListener('mouseleave', function() { cursorActive = false; lastTrailPos = null; });
+
+  /* Activate immediately on first mouse move (handles page load with cursor already on page) */
+  window.addEventListener('mousemove', function activateOnFirstMove() {
+    cursorActive = true;
+    window.removeEventListener('mousemove', activateOnFirstMove);
+  }, { passive: true });
+
+  let animId = null;
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    /* ── Update & draw mouse trail ── */
+    if (cursorActive && mouse.x > -9000) {
+      if (!lastTrailPos ||
+          Math.hypot(mouse.x - lastTrailPos.x, mouse.y - lastTrailPos.y) > 2) {
+        trails.push({
+          x: mouse.x + (Math.random() - 0.5) * 6,
+          y: mouse.y + (Math.random() - 0.5) * 6,
+          alpha: 0.85,
+          r: 5 + Math.random() * 3,
+          life: 1
+        });
+        lastTrailPos = { x: mouse.x, y: mouse.y };
+      }
+    }
+
+    for (var i = trails.length - 1; i >= 0; i--) {
+      var t = trails[i];
+      t.life -= 0.012;
+      t.alpha = t.life * 0.8;
+      t.r *= 0.988;
+      if (t.life <= 0) { trails.splice(i, 1); continue; }
+
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 140, 66, ' + t.alpha + ')';
+      ctx.shadowColor = 'rgba(255, 140, 66, 1)';
+      ctx.shadowBlur = 25;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    if (trails.length > 120) trails.splice(0, trails.length - 120);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      /* Mouse repulsion */
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < MOUSE_RADIUS && dist > 0) {
+        const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS * 0.015;
+        p.vx += (dx / dist) * force;
+        p.vy += (dy / dist) * force;
+      }
+
+      /* Damping */
+      p.vx *= 0.998;
+      p.vy *= 0.998;
+
+      /* Move */
+      p.x += p.vx;
+      p.y += p.vy;
+
+      /* Wrap */
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+      if (p.y < -10) p.y = h + 10;
+      if (p.y > h + 10) p.y = -10;
+
+      /* Draw particle */
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 140, 66, ' + p.alpha + ')';
+      ctx.fill();
+
+      /* Connect nearby */
+      for (let j = i + 1; j < particles.length; j++) {
+        const p2 = particles[j];
+        const cdx = p.x - p2.x;
+        const cdy = p.y - p2.y;
+        const cd = Math.sqrt(cdx * cdx + cdy * cdy);
+        if (cd < CONNECT_DIST) {
+          const lineAlpha = (1 - cd / CONNECT_DIST) * 0.12;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = 'rgba(255, 140, 66, ' + lineAlpha + ')';
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* ── Cursor glow with pulse ── */
+    if (cursorActive && mouse.x > -9000) {
+      smoothMouse.x += (mouse.x - smoothMouse.x) * 0.18;
+      smoothMouse.y += (mouse.y - smoothMouse.y) * 0.18;
+
+      cursorPulse += 0.04;
+      var pulse = Math.sin(cursorPulse) * 0.2 + 0.9;
+      var glowR = 80 * pulse;
+
+      /* Outer glow */
+      var gradient = ctx.createRadialGradient(
+        smoothMouse.x, smoothMouse.y, 0,
+        smoothMouse.x, smoothMouse.y, glowR
+      );
+      gradient.addColorStop(0, 'rgba(255, 140, 66, 0.4)');
+      gradient.addColorStop(0.25, 'rgba(255, 120, 50, 0.2)');
+      gradient.addColorStop(0.6, 'rgba(255, 100, 40, 0.06)');
+      gradient.addColorStop(1, 'rgba(255, 140, 66, 0)');
+
+      ctx.beginPath();
+      ctx.arc(smoothMouse.x, smoothMouse.y, glowR, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      /* Center bright dot */
+      ctx.beginPath();
+      ctx.arc(smoothMouse.x, smoothMouse.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 160, 80, 0.9)';
+      ctx.shadowColor = 'rgba(255, 140, 66, 1)';
+      ctx.shadowBlur = 20;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    animId = requestAnimationFrame(draw);
+  }
+
+  function startLoop() { if (!animId) draw(); }
+  function stopLoop() { if (animId) { cancelAnimationFrame(animId); animId = null; } }
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) { stopLoop(); } else { startLoop(); }
+  });
+
+  resize();
+  createParticles();
+  draw();
+
+  window.addEventListener('resize', function() {
+    resize();
+    createParticles();
+  });
+})();
+
+/* ═══════════════════════════════════════════
+   Navigation Scroll + Hide Scroll Hint
+   ═══════════════════════════════════════════ */
+(function() {
+  const nav = document.getElementById('nav');
+  const hint = document.getElementById('scroll-hint');
+  const btt = document.getElementById('back-to-top');
+  let ticking = false;
+
+  function onScroll() {
+    if (window.scrollY > 80) {
+      nav.classList.add('nav--scrolled');
+    } else {
+      nav.classList.remove('nav--scrolled');
+    }
+    /* Hide scroll hint once user scrolls past it */
+    if (hint && window.scrollY > hint.offsetTop - 200) {
+      hint.classList.add('scroll-hint--hidden');
+    }
+    /* Show back-to-top button after scrolling past hero */
+    if (btt) {
+      if (window.scrollY > 400) {
+        btt.classList.add('back-to-top--visible');
+      } else {
+        btt.classList.remove('back-to-top--visible');
+      }
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+
+/* ═══════════════════════════════════════════
+   Render Works Grid
+   ═══════════════════════════════════════════ */
+(function() {
+  const grid = document.getElementById('works-grid');
+
+  function renderCards(works) {
+    grid.innerHTML = '';
+    works.forEach(function(work, index) {
+      const card = document.createElement('div');
+      card.className = 'work-card';
+      card.setAttribute('data-category', work.category);
+      card.setAttribute('data-od-id', 'work-' + work.id);
+      card.setAttribute('data-work-id', work.id);
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', '查看 ' + work.title + ' 详情');
+      card.style.transitionDelay = (index * 50) + 'ms';
+      card.innerHTML =
+        '<div class="work-card__media">' +
+          '<img class="work-card__img" src="' + work.thumb + '" alt="' + work.title + ' 作品预览" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.style.background=\'linear-gradient(135deg,var(--surface),var(--surface-hover))\'">' +
+          '<div class="work-card__overlay">' +
+            '<span class="work-card__view">查看详情</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="work-card__info">' +
+          '<p class="work-card__category">' + work.category + '</p>' +
+          '<h3 class="work-card__title">' + work.title + '</h3>' +
+        '</div>';
+
+      /* Click to open modal */
+      card.addEventListener('click', function() { openModal(work); });
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(work); }
+      });
+
+      grid.appendChild(card);
+    });
+
+    /* If grid is already in viewport (filter re-render), reveal immediately with stagger */
+    var rect = grid.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      var cards = grid.querySelectorAll('.work-card');
+      cards.forEach(function(c, i) {
+        setTimeout(function() { c.classList.add('work-card--visible'); }, 50 * i);
+      });
+    }
+  }
+
+  renderCards(WORKS);
+
+  /* IntersectionObserver for scroll reveal (re-trigger on filter) */
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('work-card--visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    /* Observe future cards via mutation observer */
+    const gridObserver = new MutationObserver(function() {
+      grid.querySelectorAll('.work-card:not(.work-card--visible)').forEach(function(card) {
+        observer.observe(card);
+      });
+    });
+    gridObserver.observe(grid, { childList: true });
+  }
+
+  /* Safety net: ensure all cards visible after 2s even if observer fails */
+  setTimeout(function() {
+    grid.querySelectorAll('.work-card:not(.work-card--visible)').forEach(function(c) {
+      c.classList.add('work-card--visible');
+    });
+  }, 2000);
+
+  /* ═══════════════════════════════════════════
+     Filter Logic
+     ═══════════════════════════════════════════ */
+  var currentCategory = '全部';
+
+  window.bindFilterHandlers = function() {
+    var pills = document.querySelectorAll('.filter-pill');
+    currentCategory = '全部';
+
+    pills.forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        var cat = this.getAttribute('data-category');
+        if (cat === currentCategory) return;
+        currentCategory = cat;
+
+        /* Update pill states */
+        pills.forEach(function(p) {
+          p.classList.remove('filter-pill--active');
+          p.setAttribute('aria-selected', 'false');
+        });
+        this.classList.add('filter-pill--active');
+        this.setAttribute('aria-selected', 'true');
+
+        /* Animate out current cards */
+        var currentCards = grid.querySelectorAll('.work-card');
+        currentCards.forEach(function(c) {
+          c.classList.add('work-card--hiding');
+          c.classList.remove('work-card--visible');
+        });
+
+        /* After hide animation, render filtered and show */
+        setTimeout(function() {
+          var filtered = cat === '全部' ? WORKS : WORKS.filter(function(w) { return w.category === cat; });
+          renderCards(filtered);
+        }, 320);
+      });
+    });
+  };
+
+  window.bindFilterHandlers();
+})();
+
+/* ═══════════════════════════════════════════
+   Fullscreen Gallery Modal Logic
+   ═══════════════════════════════════════════ */
+var modalOverlay = document.getElementById('modal-overlay');
+var modalClose = document.getElementById('modal-close');
+var modalCloseBtn = document.getElementById('modal-close-btn');
+var modalImg = document.getElementById('modal-img');
+var modalCategory = document.getElementById('modal-category');
+var modalTitle = document.getElementById('modal-title');
+var modalCounter = document.getElementById('modal-counter');
+
+var galleryImages = [];
+var galleryIndex = 0;
+var galleryWork = null;
+
+function openModal(work) {
+  galleryWork = work;
+
+  /* Collect all images: thumb first, then gallery images (skip duplicates) */
+  galleryImages = [];
+  if (work.thumb) galleryImages.push(work.thumb);
+  if (work.images && work.images.length > 0) {
+    work.images.forEach(function(img) {
+      if (galleryImages.indexOf(img) === -1) galleryImages.push(img);
+    });
+  }
+  /* If no images at all, use a placeholder */
+  if (galleryImages.length === 0) galleryImages = [''];
+
+  galleryIndex = 0;
+
+  /* Set info */
+  modalCategory.textContent = work.category;
+  modalTitle.textContent = work.title;
+
+  renderGallery();
+
+  modalOverlay.classList.add('modal-overlay--open');
+  modalOverlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderGallery() {
+  var total = galleryImages.length;
+  var src = galleryImages[galleryIndex];
+
+  /* Update main image */
+  modalImg.classList.add('modal-gallery__img--loading');
+  if (src) {
+    modalImg.src = src;
+    modalImg.alt = (galleryWork ? galleryWork.title : '') + ' - 图片 ' + (galleryIndex + 1);
+    modalImg.onload = function() {
+      modalImg.classList.remove('modal-gallery__img--loading');
+    };
+    modalImg.style.display = '';
+  } else {
+    modalImg.style.display = 'none';
+    modalImg.classList.remove('modal-gallery__img--loading');
+  }
+
+  /* Update counter */
+  modalCounter.textContent = (galleryIndex + 1) + ' / ' + total;
+}
+
+function galleryPrev() {
+  if (galleryImages.length <= 1) return;
+  galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+  renderGallery();
+}
+
+function galleryNext() {
+  if (galleryImages.length <= 1) return;
+  galleryIndex = (galleryIndex + 1) % galleryImages.length;
+  renderGallery();
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('modal-overlay--open');
+  modalOverlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  galleryImages = [];
+  galleryIndex = 0;
+  galleryWork = null;
+}
+
+modalClose.addEventListener('click', closeModal);
+modalCloseBtn.addEventListener('click', function() {
+  var category = galleryWork ? galleryWork.category : null;
+  closeModal();
+  if (category) {
+    var worksSection = document.getElementById('works');
+    if (worksSection) {
+      worksSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    var pills = document.querySelectorAll('.filter-pill');
+    pills.forEach(function(p) {
+      if (p.getAttribute('data-category') === category) {
+        p.click();
+      }
+    });
+  }
+});
+
+modalOverlay.addEventListener('click', function(e) {
+  if (e.target === modalOverlay) closeModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (!modalOverlay.classList.contains('modal-overlay--open')) return;
+  if (e.key === 'Escape') {
+    closeModal();
+  }
+});
+
+/* Touch swipe support for mobile */
+(function() {
+  var touchStartX = 0;
+  var touchEndX = 0;
+  var gallery = document.getElementById('modal-gallery');
+  if (!gallery) return;
+
+  gallery.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  gallery.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    var diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) galleryNext();
+      else galleryPrev();
+    }
+  }, { passive: true });
+})();
+
+/* ═══════════════════════════════════════════
+   Work Showcase (Full-page vertical gallery)
+   ═══════════════════════════════════════════ */
+var showcaseOverlay = document.getElementById('showcase-overlay');
+var showcaseClose = document.getElementById('showcase-close');
+var showcaseBody = document.getElementById('showcase-body');
+var showcaseCategory = document.getElementById('showcase-category');
+var showcaseTitle = document.getElementById('showcase-title');
+var showcaseCount = document.getElementById('showcase-count');
+
+function openShowcase() {
+  if (!galleryWork) return;
+  var work = galleryWork;
+
+  /* Set info */
+  showcaseCategory.textContent = work.category;
+  showcaseTitle.textContent = work.title;
+  showcaseCount.textContent = '· ' + galleryImages.length + ' 张图片';
+
+  /* Render all images vertically */
+  if (galleryImages.length === 0 || (galleryImages.length === 1 && !galleryImages[0])) {
+    showcaseBody.innerHTML = '<div class="showcase-empty"><span class="showcase-empty__icon">🖼</span>暂无作品图片<br><span style="font-size:12px;opacity:0.6;">请在后台管理中上传作品图片</span></div>';
+  } else {
+    var html = '';
+    galleryImages.forEach(function(src, i) {
+      if (src) {
+        html += '<img class="showcase-img" src="' + src + '" alt="' + work.title + ' - 图片 ' + (i + 1) + '" referrerpolicy="no-referrer" loading="lazy">';
+      }
+    });
+    showcaseBody.innerHTML = html;
+  }
+
+  /* Scroll to top */
+  showcaseBody.scrollTop = 0;
+
+  /* Show overlay */
+  showcaseOverlay.classList.add('showcase-overlay--open');
+  showcaseOverlay.setAttribute('aria-hidden', 'false');
+}
+
+function closeShowcase() {
+  showcaseOverlay.classList.remove('showcase-overlay--open');
+  showcaseOverlay.setAttribute('aria-hidden', 'true');
+
+  /* Also close the gallery modal and navigate to the category on the main page */
+  var category = galleryWork ? galleryWork.category : null;
+  closeModal();
+
+  if (category) {
+    /* Scroll to works section */
+    var worksSection = document.getElementById('works');
+    if (worksSection) {
+      worksSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    /* Activate the matching category filter pill */
+    var pills = document.querySelectorAll('.filter-pill');
+    pills.forEach(function(p) {
+      var cat = p.getAttribute('data-category');
+      if (cat === category) {
+        p.click();
+      }
+    });
+  }
+}
+
+showcaseClose.addEventListener('click', closeShowcase);
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && showcaseOverlay.classList.contains('showcase-overlay--open')) {
+    closeShowcase();
+  }
+});
+
+/* ═══════════════════════════════════════════
+   Dynamic Year
+   ═══════════════════════════════════════════ */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ═══════════════════════════════════════════
+   Initialize Profile Data
+   ══════════════════════════════════════════ */
+(function() {
+  // Update avatar if exists
+  var avatarContainer = document.querySelector('.profile-avatar');
+  
+  if (avatarContainer && PROFILE.avatar && PROFILE.avatar !== null) {
+    // Replace the entire content with img tag
+    avatarContainer.innerHTML = '<img src="' + PROFILE.avatar + '" alt="' + PROFILE.name + '的头像" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius);">';
+  }
+  
+  // Update profile fields
+  document.querySelectorAll('[data-profile-field]').forEach(function(el) {
+    var field = el.getAttribute('data-profile-field');
+    if (PROFILE[field] !== undefined) {
+      el.textContent = PROFILE[field];
+    }
+  });
+  
+  // Update profile links
+  var emailLink = document.querySelector('[data-profile-link="email"]');
+  var phoneLink = document.querySelector('[data-profile-link="phone"]');
+  
+  if (emailLink) {
+    emailLink.href = 'mailto:' + PROFILE.email;
+    emailLink.textContent = PROFILE.email;
+  }
+  
+  if (phoneLink) {
+    phoneLink.href = 'tel:' + PROFILE.phone.replace(/\s/g, '');
+    phoneLink.textContent = PROFILE.phone;
+  }
+})();
+
+/* ═══════════════════════════════════════════
+   Auto-sync data from localStorage changes + cross-frame postMessage
+   ═══════════════════════════════════════════ */
+
+// Shared sync function: updates UI when data changes
+function syncData(key, newValue) {
+  if (!newValue) return;
+  console.log('Syncing data from admin:', key);
+
+  if (key === 'arui_categories') {
+    CATEGORIES = JSON.parse(newValue) || [...DEFAULT_CATEGORIES];
+    var bar = document.getElementById('filter-bar');
+    if (bar) {
+      var html = '<button class="filter-pill filter-pill--active" role="tab" aria-selected="true" data-category="全部">全部</button>';
+      CATEGORIES.forEach(function(cat) {
+        html += '<button class="filter-pill" role="tab" aria-selected="false" data-category="' + cat + '">' + cat + '</button>';
+      });
+      bar.innerHTML = html;
+      bindFilterHandlers();
+    }
+  }
+
+  if (key === 'arui_works') {
+    WORKS = JSON.parse(newValue) || [...DEFAULT_WORKS];
+    var grid = document.getElementById('works-grid');
+    if (grid) {
+      grid.innerHTML = '';
+      WORKS.forEach(function(work, index) {
+        var card = document.createElement('div');
+        card.className = 'work-card work-card--visible';
+        card.setAttribute('data-category', work.category);
+        card.setAttribute('data-od-id', 'work-' + work.id);
+        card.setAttribute('data-work-id', work.id);
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', '查看 ' + work.title + ' 详情');
+        card.style.transitionDelay = (index * 50) + 'ms';
+        card.innerHTML =
+          '<div class="work-card__media">' +
+            '<img class="work-card__img" src="' + work.thumb + '" alt="' + work.title + ' 作品预览" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.style.background=\'linear-gradient(135deg,var(--surface),var(--surface-hover))\'">' +
+            '<div class="work-card__overlay">' +
+              '<span class="work-card__view">查看详情</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="work-card__info">' +
+            '<p class="work-card__category">' + work.category + '</p>' +
+            '<h3 class="work-card__title">' + work.title + '</h3>' +
+          '</div>';
+        card.addEventListener('click', function() { openModal(work); });
+        card.addEventListener('keydown', function(ev) {
+          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openModal(work); }
+        });
+        grid.appendChild(card);
+      });
+    }
+  }
+
+  if (key === 'arui_profile') {
+    PROFILE = JSON.parse(newValue) || DEFAULT_PROFILE;
+    var avatarContainer = document.querySelector('.profile-avatar');
+    if (avatarContainer && PROFILE.avatar && PROFILE.avatar !== null) {
+      avatarContainer.innerHTML = '<img src="' + PROFILE.avatar + '" alt="' + PROFILE.name + '的头像" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius);">';
+    }
+    document.querySelectorAll('[data-profile-field]').forEach(function(el) {
+      var field = el.getAttribute('data-profile-field');
+      if (PROFILE[field] !== undefined) { el.textContent = PROFILE[field]; }
+    });
+    var emailLink = document.querySelector('[data-profile-link="email"]');
+    var phoneLink = document.querySelector('[data-profile-link="phone"]');
+    if (emailLink) { emailLink.href = 'mailto:' + PROFILE.email; emailLink.textContent = PROFILE.email; }
+    if (phoneLink) { phoneLink.href = 'tel:' + PROFILE.phone.replace(/\s/g, ''); phoneLink.textContent = PROFILE.phone; }
+  }
+}
+
+// Native localStorage sync (works across tabs/windows on same origin)
+window.addEventListener('storage', function(e) {
+  if (e.key === 'arui_works' || e.key === 'arui_profile' || e.key === 'arui_categories') {
+    syncData(e.key, e.newValue);
+  }
+});
+
+// Cross-frame postMessage sync (works in Canvas iframes where storage events don't fire)
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'arui-data-sync' && e.data.key) {
+    syncData(e.data.key, e.data.value);
+  }
+});
+
+// Load data from server on page load
+(function() {
+  // Try data.json first (works on GitHub Pages and local server)
+  fetch('data.json')
+    .then(function(r) {
+      if (!r.ok) throw new Error('Returned ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      if (data.categories && Array.isArray(data.categories)) {
+        syncData('arui_categories', JSON.stringify(data.categories));
+      }
+      if (data.works && Array.isArray(data.works)) {
+        syncData('arui_works', JSON.stringify(data.works));
+      }
+      if (data.profile) {
+        syncData('arui_profile', JSON.stringify(data.profile));
+      }
+    })
+    .catch(function(e) {
+      // Fallback: try local Python server
+      fetch('http://127.0.0.1:8765/api/data')
+        .then(function(r) {
+          if (!r.ok) throw new Error('Server returned ' + r.status);
+          return r.json();
+        })
+        .then(function(data) {
+          if (data.categories && Array.isArray(data.categories)) {
+            syncData('arui_categories', JSON.stringify(data.categories));
+          }
+          if (data.works && Array.isArray(data.works)) {
+            syncData('arui_works', JSON.stringify(data.works));
+          }
+          if (data.profile) {
+            syncData('arui_profile', JSON.stringify(data.profile));
+          }
+        })
+        .catch(function(e2) {
+          console.warn('Failed to load data, using defaults:', e2);
+        });
+    });
+})();
+
+/* ═══════════════════════════════════════════
+   Mobile Nav Toggle
+   ═══════════════════════════════════════════ */
+(function() {
+  var toggle = document.getElementById('nav-toggle');
+  var links = document.querySelector('.nav__links');
+  if (!toggle || !links) return;
+
+  toggle.addEventListener('click', function() {
+    var isOpen = links.classList.toggle('nav__links--open');
+    toggle.classList.toggle('nav__hamburger--open', isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggle.setAttribute('aria-label', isOpen ? '关闭导航菜单' : '打开导航菜单');
+  });
+
+  /* Close on link click */
+  links.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      links.classList.remove('nav__links--open');
+      toggle.classList.remove('nav__hamburger--open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+
+/* ═══════════════════════════════════════════
+   Filter Keyboard Navigation
+   ═══════════════════════════════════════════ */
+(function() {
+  var bar = document.querySelector('.filter-bar');
+  if (!bar) return;
+  var pills = bar.querySelectorAll('.filter-pill');
+
+  bar.addEventListener('keydown', function(e) {
+    var idx = Array.prototype.indexOf.call(pills, document.activeElement);
+    if (idx < 0) return;
+
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      pills[(idx + 1) % pills.length].focus();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      pills[(idx - 1 + pills.length) % pills.length].focus();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      pills[0].focus();
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      pills[pills.length - 1].focus();
+    }
+  });
+})();
+</script>
+</body>
+</html>
