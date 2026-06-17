@@ -1410,9 +1410,9 @@ img { display: block; max-width: 100%; }
   </a>
   <nav class="hero-menu" aria-label="作品集导航">
     <a href="#hero">HOME</a>
-    <a href="#works">WORKS</a>
+    <a href="#works-section">WORKS</a>
     <a href="admin.html">ADMIN</a>
-    <a class="nav-cta" href="#works">
+    <a class="nav-cta" href="#works-section">
       <span>查看简介</span>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
     </a>
@@ -1424,7 +1424,7 @@ img { display: block; max-width: 100%; }
   <div class="hero__badge" data-profile-field="heroBadge">UI/UX Designer</div>
   <h1 class="hero__name"><span data-profile-field="heroNameLeft">李杨</span><span data-profile-field="heroNameRight">ARUI</span></h1>
   <p class="hero__subtitle" data-profile-field="heroTagline">专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。</p>
-  <div class="hero__scroll" onclick="document.getElementById('works').scrollIntoView({behavior:'smooth'})" role="button" aria-label="向下滚动到作品集">
+  <div class="hero__scroll" onclick="document.getElementById('works-section').scrollIntoView({behavior:'smooth'})" role="button" aria-label="向下滚动到作品集">
     <div class="hero__scroll-mouse">
       <div class="hero__scroll-wheel"></div>
     </div>
@@ -1502,7 +1502,7 @@ img { display: block; max-width: 100%; }
     </div>
   </section>
 
-  <header class="section-header" data-od-id="works-header">
+  <header class="section-header" id="works-section" data-od-id="works-header">
     <p class="section-header__label" data-profile-field="sectionLabel">Selected Works</p>
     <h2 class="section-header__title" data-profile-field="sectionTitle">作品集</h2>
   </header>
@@ -1822,12 +1822,12 @@ let PROFILE = DEFAULT_PROFILE;
    ═══════════════════════════════════════════ */
 (function() {
   var navLinks = document.querySelectorAll('.hero-menu a:not(.nav-cta)');
-  var worksSection = document.getElementById('works');
+  var worksSection = document.getElementById('works-section');
 
   function updateActive() {
     var scrollY = window.scrollY;
     var worksTop = worksSection ? worksSection.offsetTop - 200 : 600;
-    var activeHref = scrollY < worksTop ? '#hero' : '#works';
+    var activeHref = scrollY < worksTop ? '#hero' : '#works-section';
 
     navLinks.forEach(function(link) {
       if (link.getAttribute('href') === activeHref) {
@@ -2086,7 +2086,7 @@ modalCloseBtn.addEventListener('click', function() {
   var category = galleryWork ? galleryWork.category : null;
   closeModal();
   if (category) {
-    var worksSection = document.getElementById('works');
+    var worksSection = document.getElementById('works-section');
     if (worksSection) {
       worksSection.scrollIntoView({ behavior: 'smooth' });
     }
@@ -2181,7 +2181,7 @@ function closeShowcase() {
 
   if (category) {
     /* Scroll to works section */
-    var worksSection = document.getElementById('works');
+    var worksSection = document.getElementById('works-section');
     if (worksSection) {
       worksSection.scrollIntoView({ behavior: 'smooth' });
     }
