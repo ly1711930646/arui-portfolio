@@ -708,18 +708,45 @@ img { display: block; max-width: 100%; }
 }
 
 .works-carousel-page .work-card__info {
-  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 16px;
+  z-index: 2;
+  background: transparent;
+}
+
+.works-carousel-page .work-card__category {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  margin-bottom: 6px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.works-carousel-page .work-card__title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  line-height: 1.3;
+}
+
+.works-carousel-page .work-card:hover .work-card__title {
+  color: var(--primary);
 }
 
 .works-carousel-page .work-card__overlay {
   border-radius: 14px;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 50%, transparent 100%);
   padding: 16px;
-  opacity: 0;
+  opacity: 1;
 }
 
 .works-carousel-page .work-card:hover .work-card__overlay {
-  opacity: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
 }
 
 .works-carousel-page .work-card__view {
