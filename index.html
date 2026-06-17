@@ -1661,12 +1661,10 @@ let PROFILE = DEFAULT_PROFILE;
     });
     bar.innerHTML = html;
   }
-
-  /* Reveal page */
-  document.body.classList.add('page-ready');
 })();
-/* Fallback: always reveal after 1.5s even if something went wrong */
-setTimeout(function() { document.body.classList.add('page-ready'); }, 1500);
+/* Reveal page — called after fetch completes, or after timeout as fallback */
+function revealPage() { document.body.classList.add('page-ready'); }
+setTimeout(revealPage, 800);
 
 /* ═══════════════════════════════════════════
    Particle Canvas — Minimal Elegant
@@ -2276,6 +2274,7 @@ function syncData(key, newValue) {
 
   if (key === 'arui_categories') {
     CATEGORIES = JSON.parse(newValue) || [...DEFAULT_CATEGORIES];
+    try { localStorage.setItem('arui_categories', newValue); } catch(e) {}
     var bar = document.getElementById('filter-bar');
     if (bar) {
       var html = '<button class="filter-pill filter-pill--active" role="tab" aria-selected="true" data-category="全部">全部</button>';
@@ -2289,6 +2288,7 @@ function syncData(key, newValue) {
 
   if (key === 'arui_works') {
     WORKS = JSON.parse(newValue) || [...DEFAULT_WORKS];
+    try { localStorage.setItem('arui_works', newValue); } catch(e) {}
     var grid = document.getElementById('works-grid');
     if (grid) {
       grid.innerHTML = '';
@@ -2324,6 +2324,7 @@ function syncData(key, newValue) {
 
   if (key === 'arui_profile') {
     PROFILE = JSON.parse(newValue) || DEFAULT_PROFILE;
+    try { localStorage.setItem('arui_profile', newValue); } catch(e) {}
     var avatarContainer = document.querySelector('.profile-avatar');
     if (avatarContainer && PROFILE.avatar && PROFILE.avatar !== null) {
       avatarContainer.innerHTML = '<img src="' + PROFILE.avatar + '" alt="' + PROFILE.name + '的头像" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius);">';
@@ -2372,6 +2373,7 @@ window.addEventListener('message', function(e) {
       if (data.profile) {
         syncData('arui_profile', JSON.stringify(data.profile));
       }
+      revealPage();
     })
     .catch(function(e) {
       // Fallback: try local Python server
@@ -2390,9 +2392,11 @@ window.addEventListener('message', function(e) {
           if (data.profile) {
             syncData('arui_profile', JSON.stringify(data.profile));
           }
+          revealPage();
         })
         .catch(function(e2) {
           console.warn('Failed to load data, using defaults:', e2);
+          revealPage();
         });
     });
 })();
