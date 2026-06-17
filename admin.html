@@ -2021,6 +2021,7 @@ function saveDataToServer() {
             localStorage.setItem('arui_works', JSON.stringify(works));
             localStorage.setItem('arui_profile', JSON.stringify(profile));
             localStorage.setItem('arui_categories', JSON.stringify(categories));
+            localStorage.setItem('arui_last_save', Date.now().toString());
           } catch(e) {}
           showToast('数据已保存到 GitHub', 'success');
           broadcastToFrames('arui_works', JSON.stringify(works));
@@ -2064,6 +2065,7 @@ function saveDataLocal() {
     localStorage.setItem('arui_works', JSON.stringify(works));
     localStorage.setItem('arui_profile', JSON.stringify(profile));
     localStorage.setItem('arui_categories', JSON.stringify(categories));
+    localStorage.setItem('arui_last_save', Date.now().toString());
   } catch(e) {}
 
   fetch(API_BASE + '/api/data', {
@@ -3077,55 +3079,53 @@ loadDataFromServer().then(function() {
     logo.innerHTML = (profile.brandLeft || profile.name) + '<span style="color: #ff8c42;">.</span>' + (profile.brandRight || 'ARUI');
   }
 
-  /* ── Cross-frame sync: listen for data changes from other tabs ── */
+  /* ── Cross-frame sync: storage event + postMessage + polling ── */
 
-  // 1. storage event — fires when another iframe at the same origin writes to localStorage
+  function applySyncedData() {
+    try {
+      var lw = localStorage.getItem('arui_works');
+      var lp = localStorage.getItem('arui_profile');
+      var lc = localStorage.getItem('arui_categories');
+      var changed = false;
+      if (lw) {
+        var pw = JSON.stringify(works);
+        if (lw !== pw) { works = JSON.parse(lw); renderWorksList(); changed = true; }
+      }
+      if (lp) {
+        var pp = JSON.stringify(profile);
+        if (lp !== pp) { profile = JSON.parse(lp); loadProfileForm(); changed = true; }
+      }
+      if (lc) {
+        var pc = JSON.stringify(categories);
+        if (lc !== pc) { categories = JSON.parse(lc); renderCategoryList(); populateCategorySelect(); changed = true; }
+      }
+      if (changed) console.log('Synced data from localStorage polling');
+    } catch(ex) {}
+  }
+
+  // 1. storage event — fires when another iframe writes to localStorage
   window.addEventListener('storage', function(e) {
-    if (!e.key || !e.newValue) return;
-    var changed = false;
-    try {
-      if (e.key === 'arui_works') {
-        works = JSON.parse(e.newValue);
-        renderWorksList();
-        changed = true;
-      }
-      if (e.key === 'arui_profile') {
-        profile = JSON.parse(e.newValue);
-        loadProfileForm();
-        changed = true;
-      }
-      if (e.key === 'arui_categories') {
-        categories = JSON.parse(e.newValue);
-        renderCategoryList();
-        populateCategorySelect();
-        changed = true;
-      }
-    } catch(ex) {}
-    if (changed) {
-      console.log('Synced from localStorage storage event:', e.key);
-    }
+    if (e.key === 'arui_last_save') { applySyncedData(); }
   });
 
-  // 2. postMessage — fires when another frame broadcasts via broadcastToFrames
+  // 2. postMessage — fires when another frame broadcasts
   window.addEventListener('message', function(e) {
-    if (!e.data || e.data.type !== 'arui-data-sync' || !e.data.key) return;
-    try {
-      if (e.data.key === 'arui_works') {
-        works = JSON.parse(e.data.value);
-        renderWorksList();
-      }
-      if (e.data.key === 'arui_profile') {
-        profile = JSON.parse(e.data.value);
-        loadProfileForm();
-      }
-      if (e.data.key === 'arui_categories') {
-        categories = JSON.parse(e.data.value);
-        renderCategoryList();
-        populateCategorySelect();
-      }
-      console.log('Synced from postMessage:', e.data.key);
-    } catch(ex) {}
+    if (!e.data || e.data.type !== 'arui-data-sync') return;
+    applySyncedData();
   });
+
+  // 3. Polling — most reliable fallback for isolated Canvas iframes
+  var _lastKnownSave = '';
+  try { _lastKnownSave = localStorage.getItem('arui_last_save') || ''; } catch(e) {}
+  setInterval(function() {
+    try {
+      var current = localStorage.getItem('arui_last_save') || '';
+      if (current && current !== _lastKnownSave) {
+        _lastKnownSave = current;
+        applySyncedData();
+      }
+    } catch(e) {}
+  }, 2000);
 });
 </script>
 
