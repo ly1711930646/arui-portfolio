@@ -270,9 +270,25 @@ img { display: block; max-width: 100%; }
   letter-spacing: -0.03em;
   color: var(--fg);
   margin-bottom: 20px;
+  display: inline-block;
   opacity: 0;
   transform: translateY(24px);
   animation: fadeUp 0.8s ease 0.4s forwards;
+  will-change: transform;
+}
+
+@keyframes tiltWobble {
+  0%   { transform: skewX(0deg); }
+  20%  { transform: skewX(-5deg); }
+  45%  { transform: skewX(3deg); }
+  70%  { transform: skewX(-2deg); }
+  100% { transform: skewX(-3deg); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero__name:hover {
+    animation: tiltWobble 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
 }
 
 .hero__name span:last-child {
