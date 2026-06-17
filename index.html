@@ -195,6 +195,12 @@ img { display: block; max-width: 100%; }
   border-color: color-mix(in srgb, var(--primary) 28%, transparent);
   background: color-mix(in srgb, var(--primary) 6%, transparent);
 }
+.hero-menu a.active:not(.nav-cta) {
+  color: #fff;
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: 0 0 18px rgba(255,140,66,0.3);
+}
 .hero-menu .nav-cta {
   gap: 10px;
   margin-left: 5px;
@@ -1795,6 +1801,51 @@ let PROFILE = DEFAULT_PROFILE;
       ticking = true;
     }
   }, { passive: true });
+})();
+
+/* ═══════════════════════════════════════════
+   Nav Active State (scroll-based)
+   ═══════════════════════════════════════════ */
+(function() {
+  var navLinks = document.querySelectorAll('.hero-menu a:not(.nav-cta)');
+  var worksSection = document.getElementById('works');
+
+  function updateActive() {
+    var scrollY = window.scrollY;
+    var worksTop = worksSection ? worksSection.offsetTop - 200 : 600;
+    var activeHref = scrollY < worksTop ? '#hero' : '#works';
+
+    navLinks.forEach(function(link) {
+      if (link.getAttribute('href') === activeHref) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  /* Set initial active state */
+  updateActive();
+
+  /* Update on scroll */
+  var navTicking = false;
+  window.addEventListener('scroll', function() {
+    if (!navTicking) {
+      requestAnimationFrame(function() {
+        updateActive();
+        navTicking = false;
+      });
+      navTicking = true;
+    }
+  }, { passive: true });
+
+  /* Immediate feedback on click */
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      navLinks.forEach(function(l) { l.classList.remove('active'); });
+      link.classList.add('active');
+    });
+  });
 })();
 
 /* ═══════════════════════════════════════════
