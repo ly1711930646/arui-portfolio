@@ -277,17 +277,16 @@ img { display: block; max-width: 100%; }
   color: var(--fg);
   margin-bottom: 20px;
   display: inline-block;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero__name .k-char {
+  display: inline-block;
+  transition: transform 0.56s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+  transform-origin: center;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .hero__name:hover {
-    transform: skewX(-6deg);
-  }
-}
-
-.hero__name span:last-child {
+.hero__name .k-orange {
   background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, var(--accent)));
   -webkit-background-clip: text;
   background-clip: text;
@@ -2274,6 +2273,80 @@ document.getElementById('year').textContent = new Date().getFullYear();
   if (phoneLink) {
     phoneLink.href = 'tel:' + PROFILE.phone.replace(/\s/g, '');
     phoneLink.textContent = PROFILE.phone;
+  }
+})();
+
+/* ═══════════════════════════════════════════
+   Kinetic Title — hover scatter effect (desktop only)
+   ═══════════════════════════════════════════ */
+(function() {
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+
+  function initKinetic() {
+    var h1 = document.querySelector('.hero__name');
+    if (!h1 || h1.dataset.kinetic) return;
+    h1.dataset.kinetic = '1';
+
+    var chars = [];
+    var originalSpans = h1.querySelectorAll('span[data-profile-field]');
+    var groups = [];
+    originalSpans.forEach(function(span) {
+      var isOrange = span.getAttribute('data-profile-field') === 'heroNameRight';
+      var text = span.textContent;
+      var group = [];
+      for (var i = 0; i < text.length; i++) {
+        var c = document.createElement('span');
+        c.className = 'k-char' + (isOrange ? ' k-orange' : '');
+        c.textContent = text[i];
+        group.push(c);
+        chars.push(c);
+      }
+      groups.push({ isOrange: isOrange, chars: group });
+    });
+
+    h1.innerHTML = '';
+    groups.forEach(function(g) {
+      g.chars.forEach(function(c) { h1.appendChild(c); });
+    });
+
+    /* Pre-generate scatter values per character */
+    var scatterData = chars.map(function(c, i) {
+      var angle = (i * 137.5) % 360;
+      var rad = angle * Math.PI / 180;
+      var dist = 8 + (i * 7) % 18;
+      var tx = Math.cos(rad) * dist;
+      var ty = Math.sin(rad) * dist;
+      var rot = ((i * 13) % 11 - 5) * 0.6;
+      var sc = 0.96 + ((i * 3) % 9) * 0.01;
+      return { tx: tx.toFixed(1), ty: ty.toFixed(1), rot: rot.toFixed(2), sc: sc.toFixed(3) };
+    });
+
+    h1.addEventListener('mouseenter', function() {
+      chars.forEach(function(c, i) {
+        var d = scatterData[i];
+        c.style.transform = 'translate3d(' + d.tx + 'px,' + d.ty + 'px,0) rotate(' + d.rot + 'deg) scale(' + d.sc + ')';
+      });
+    });
+
+    h1.addEventListener('mouseleave', function() {
+      chars.forEach(function(c) {
+        c.style.transform = 'none';
+      });
+    });
+  }
+
+  /* Init after profile data is rendered */
+  initKinetic();
+  /* Re-init when syncData re-renders profile */
+  var _origSync = window.syncData;
+  if (_origSync) {
+    window.syncData = function(key, val) {
+      _origSync(key, val);
+      if (key === 'arui_profile') {
+        var h1 = document.querySelector('.hero__name');
+        if (h1) { h1.dataset.kinetic = ''; initKinetic(); }
+      }
+    };
   }
 })();
 
