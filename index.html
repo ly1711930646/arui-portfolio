@@ -1655,9 +1655,21 @@ const DEFAULT_PROFILE = {
 // Load profile — defaults used until server data arrives
 let PROFILE = DEFAULT_PROFILE;
 
+/* Data version — change this when embedded defaults are updated to force-clear stale localStorage */
+var EMBEDDED_DATA_VERSION = 'v3_2024';
+
 /* Pre-load from localStorage before first render to avoid flash of defaults */
 (function() {
   try {
+    // Auto-clear stale localStorage when embedded defaults change
+    var storedVer = localStorage.getItem('arui_data_ver');
+    if (storedVer !== EMBEDDED_DATA_VERSION) {
+      localStorage.removeItem('arui_profile');
+      localStorage.removeItem('arui_works');
+      localStorage.removeItem('arui_categories');
+      localStorage.setItem('arui_data_ver', EMBEDDED_DATA_VERSION);
+    }
+
     var lp = localStorage.getItem('arui_profile');
     if (lp) PROFILE = JSON.parse(lp);
     var lw = localStorage.getItem('arui_works');
@@ -2285,6 +2297,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 function syncData(key, newValue) {
   if (!newValue) return;
   console.log('Syncing data from admin:', key);
+  try { localStorage.setItem('arui_data_ver', EMBEDDED_DATA_VERSION); } catch(e) {}
 
   if (key === 'arui_categories') {
     CATEGORIES = JSON.parse(newValue) || [...DEFAULT_CATEGORIES];
