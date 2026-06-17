@@ -277,17 +277,12 @@ img { display: block; max-width: 100%; }
   will-change: transform;
 }
 
-@keyframes tiltWobble {
-  0%   { transform: skewX(0deg); }
-  20%  { transform: skewX(-5deg); }
-  45%  { transform: skewX(3deg); }
-  70%  { transform: skewX(-2deg); }
-  100% { transform: skewX(-3deg); }
-}
-
 @media (hover: hover) and (pointer: fine) {
+  .hero__name {
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
   .hero__name:hover {
-    animation: tiltWobble 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform: skewX(-5deg);
   }
 }
 
