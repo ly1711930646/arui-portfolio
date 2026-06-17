@@ -1341,8 +1341,10 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 768px) {
-  .hero-nav { top: 12px; width: max-content; max-width: calc(100vw - 20px); min-height: 38px; gap: 5px; padding: 4px 6px 4px 10px; justify-content: center; }
-  .nav-orbit-mark { display: none; }
+  .hero-nav { top: 12px; width: max-content; max-width: calc(100vw - 12px); min-height: 38px; gap: 5px; padding: 4px 6px 4px 10px; justify-content: center; }
+  .nav-orbit-mark { width: 14px; height: 14px; }
+  .nav-orbit-mark::before { top: 3px; right: 3px; bottom: 3px; left: 3px; }
+  .nav-orbit-mark::after { width: 3px; height: 3px; top: -1px; transform-origin: 0 8px; }
   .hero-brand { font-size: 12px; gap: 4px; }
   .hero-menu { gap: 2px; }
   .hero-menu a { font-size: 11px; min-height: 28px; padding: 0 7px; }
