@@ -1341,14 +1341,16 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 768px) {
-  .hero-nav { top: 14px; min-height: 44px; gap: 6px; padding: 6px 8px 6px 12px; }
-  .nav-orbit-mark { width: 16px; height: 16px; }
-  .nav-orbit-mark::before { top: 4px; right: 4px; bottom: 4px; left: 4px; }
-  .hero-brand { font-size: 13px; gap: 6px; }
-  .hero-menu { gap: 3px; }
-  .hero-menu a { font-size: 12px; min-height: 30px; padding: 0 10px; }
+  .hero-nav { top: 12px; width: calc(100vw - 24px); max-width: none; min-height: 40px; gap: 4px; padding: 5px 6px 5px 10px; justify-content: space-between; overflow: hidden; }
+  .nav-orbit-mark { width: 14px; height: 14px; }
+  .nav-orbit-mark::before { top: 3px; right: 3px; bottom: 3px; left: 3px; }
+  .nav-orbit-mark::after { width: 3px; height: 3px; top: -1px; transform-origin: 0 8px; }
+  .hero-brand { font-size: 12px; gap: 5px; }
+  .hero-menu { gap: 2px; }
+  .hero-menu a { font-size: 11px; min-height: 28px; padding: 0 8px; }
   .hero-menu a[href="admin.html"] { display: none; }
-  .hero-menu .nav-cta { padding: 0 12px; font-size: 12px; }
+  .hero-menu .nav-cta { padding: 0 10px; font-size: 11px; margin-left: 2px; gap: 5px; }
+  .hero-menu .nav-cta svg { width: 10px; height: 10px; }
   .main { padding: 0 20px 80px; }
   .works-grid {
     grid-template-columns: repeat(2, 1fr);
