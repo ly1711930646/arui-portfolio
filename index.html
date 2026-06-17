@@ -72,6 +72,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 90px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -1852,11 +1853,25 @@ let PROFILE = DEFAULT_PROFILE;
     }
   }, { passive: true });
 
-  /* Immediate feedback on click */
-  navLinks.forEach(function(link) {
-    link.addEventListener('click', function() {
-      navLinks.forEach(function(l) { l.classList.remove('active'); });
-      link.classList.add('active');
+  /* Immediate feedback on click + smooth scroll */
+  var allNavLinks = document.querySelectorAll('.hero-menu a');
+  allNavLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var href = link.getAttribute('href');
+      if (href && href.charAt(0) === '#') {
+        e.preventDefault();
+        var target = document.getElementById(href.substring(1));
+        if (target) {
+          var offset = window.innerWidth < 768 ? 56 : 90;
+          var top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      }
+      /* Update active state for non-cta links */
+      if (!link.classList.contains('nav-cta')) {
+        navLinks.forEach(function(l) { l.classList.remove('active'); });
+        link.classList.add('active');
+      }
     });
   });
 })();
