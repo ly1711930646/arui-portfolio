@@ -83,6 +83,11 @@ body {
   color: var(--fg);
   line-height: 1.6;
   overflow-x: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+body.page-ready {
+  opacity: 1;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -1646,6 +1651,22 @@ const DEFAULT_PROFILE = {
 
 // Load profile — defaults used until server data arrives
 let PROFILE = DEFAULT_PROFILE;
+
+/* Pre-load from localStorage before first render to avoid flash of defaults */
+(function() {
+  try {
+    var lp = localStorage.getItem('arui_profile');
+    if (lp) PROFILE = JSON.parse(lp);
+    var lw = localStorage.getItem('arui_works');
+    if (lw) WORKS = JSON.parse(lw);
+    var lc = localStorage.getItem('arui_categories');
+    if (lc) CATEGORIES = JSON.parse(lc);
+  } catch(e) {}
+  /* Reveal page */
+  document.body.classList.add('page-ready');
+})();
+/* Fallback: always reveal after 1.5s even if something went wrong */
+setTimeout(function() { document.body.classList.add('page-ready'); }, 1500);
 
 /* ═══════════════════════════════════════════
    Particle Canvas — Minimal Elegant
