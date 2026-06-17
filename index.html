@@ -1674,13 +1674,12 @@ let PROFILE = DEFAULT_PROFILE;
     }
   }
 
-  window.addEventListener('mousemove', function(e) {
-    mouse.x = e.clientX; mouse.y = e.clientY;
-  }, { passive: true });
-  window.addEventListener('touchmove', function(e) {
-    if (e.touches.length) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
-  }, { passive: true });
-  window.addEventListener('mouseleave', function() { mouse.x = -9999; mouse.y = -9999; });
+  if (!isMobile) {
+    window.addEventListener('mousemove', function(e) {
+      mouse.x = e.clientX; mouse.y = e.clientY;
+    }, { passive: true });
+    window.addEventListener('mouseleave', function() { mouse.x = -9999; mouse.y = -9999; });
+  }
 
   var animId = null;
 
@@ -1717,15 +1716,16 @@ let PROFILE = DEFAULT_PROFILE;
       }
     }
 
-    if (mouse.x > -9000) {
-      smoothMouse.x += (mouse.x - smoothMouse.x) * 0.06;
-      smoothMouse.y += (mouse.y - smoothMouse.y) * 0.06;
-      var g = ctx.createRadialGradient(smoothMouse.x, smoothMouse.y, 0, smoothMouse.x, smoothMouse.y, 120);
-      g.addColorStop(0, 'rgba(255,255,255,0.06)');
-      g.addColorStop(0.5, 'rgba(255,255,255,0.02)');
+    if (!isMobile && mouse.x > -9000) {
+      smoothMouse.x += (mouse.x - smoothMouse.x) * 0.12;
+      smoothMouse.y += (mouse.y - smoothMouse.y) * 0.12;
+      var g = ctx.createRadialGradient(smoothMouse.x, smoothMouse.y, 0, smoothMouse.x, smoothMouse.y, 160);
+      g.addColorStop(0, 'rgba(255,255,255,0.15)');
+      g.addColorStop(0.3, 'rgba(255,255,255,0.06)');
+      g.addColorStop(0.7, 'rgba(255,255,255,0.02)');
       g.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.beginPath();
-      ctx.arc(smoothMouse.x, smoothMouse.y, 120, 0, Math.PI * 2);
+      ctx.arc(smoothMouse.x, smoothMouse.y, 160, 0, Math.PI * 2);
       ctx.fillStyle = g;
       ctx.fill();
     }
