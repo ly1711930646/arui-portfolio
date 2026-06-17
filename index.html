@@ -1350,7 +1350,10 @@ img { display: block; max-width: 100%; }
   .hero-menu a { font-size: 10px; min-height: 24px; padding: 0 5px; flex-shrink: 1; }
   .hero-menu .nav-cta { padding: 0 8px; font-size: 10px; margin-left: 1px; gap: 3px; flex-shrink: 0; }
   .hero-menu .nav-cta svg { width: 9px; height: 9px; flex-shrink: 0; }
-  .main { padding: 0 20px 80px; }
+  .hero { min-height: auto; padding-top: 80px; padding-bottom: 40px; justify-content: flex-start; }
+  .hero__scroll { bottom: 16px; }
+  .profile-section { padding-top: 30px; padding-bottom: 30px; }
+  .main { padding: 0 20px 60px; }
   .works-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
@@ -1360,7 +1363,7 @@ img { display: block; max-width: 100%; }
   .footer__inner { flex-direction: column; gap: 16px; }
   .filter-bar { gap: 6px; }
   .filter-pill { padding: 6px 14px; font-size: 12px; }
-  :root { --section-gap: 80px; }
+  :root { --section-gap: 40px; }
 }
 
 @media (min-width: 769px) {
