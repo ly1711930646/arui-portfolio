@@ -262,6 +262,12 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 0 8px var(--primary);
 }
 
+.hero__name-wrap {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
 .hero__name {
   font-family: var(--font-display);
   font-size: clamp(56px, 10vw, 96px);
@@ -271,18 +277,13 @@ img { display: block; max-width: 100%; }
   color: var(--fg);
   margin-bottom: 20px;
   display: inline-block;
-  opacity: 0;
-  transform: translateY(24px);
-  animation: fadeUp 0.8s ease 0.4s forwards;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .hero__name {
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
   .hero__name:hover {
-    transform: skewX(-5deg);
+    transform: skewX(-6deg);
   }
 }
 
@@ -1438,7 +1439,9 @@ img { display: block; max-width: 100%; }
 <!-- Hero -->
 <section class="hero" id="hero" data-component="hero">
   <div class="hero__badge" data-profile-field="heroBadge">UI/UX Designer</div>
-  <h1 class="hero__name"><span data-profile-field="heroNameLeft">李杨</span><span data-profile-field="heroNameRight">ARUI</span></h1>
+  <div class="hero__name-wrap">
+    <h1 class="hero__name"><span data-profile-field="heroNameLeft">李杨</span><span data-profile-field="heroNameRight">ARUI</span></h1>
+  </div>
   <p class="hero__subtitle" data-profile-field="heroTagline">专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。</p>
   <div class="hero__scroll" onclick="document.getElementById('works-section').scrollIntoView({behavior:'smooth'})" role="button" aria-label="向下滚动到作品集">
     <div class="hero__scroll-mouse">
