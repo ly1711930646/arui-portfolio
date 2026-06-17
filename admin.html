@@ -3076,6 +3076,56 @@ loadDataFromServer().then(function() {
   if (logo) {
     logo.innerHTML = (profile.brandLeft || profile.name) + '<span style="color: #ff8c42;">.</span>' + (profile.brandRight || 'ARUI');
   }
+
+  /* ── Cross-frame sync: listen for data changes from other tabs ── */
+
+  // 1. storage event — fires when another iframe at the same origin writes to localStorage
+  window.addEventListener('storage', function(e) {
+    if (!e.key || !e.newValue) return;
+    var changed = false;
+    try {
+      if (e.key === 'arui_works') {
+        works = JSON.parse(e.newValue);
+        renderWorksList();
+        changed = true;
+      }
+      if (e.key === 'arui_profile') {
+        profile = JSON.parse(e.newValue);
+        loadProfileForm();
+        changed = true;
+      }
+      if (e.key === 'arui_categories') {
+        categories = JSON.parse(e.newValue);
+        renderCategoryList();
+        populateCategorySelect();
+        changed = true;
+      }
+    } catch(ex) {}
+    if (changed) {
+      console.log('Synced from localStorage storage event:', e.key);
+    }
+  });
+
+  // 2. postMessage — fires when another frame broadcasts via broadcastToFrames
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'arui-data-sync' || !e.data.key) return;
+    try {
+      if (e.data.key === 'arui_works') {
+        works = JSON.parse(e.data.value);
+        renderWorksList();
+      }
+      if (e.data.key === 'arui_profile') {
+        profile = JSON.parse(e.data.value);
+        loadProfileForm();
+      }
+      if (e.data.key === 'arui_categories') {
+        categories = JSON.parse(e.data.value);
+        renderCategoryList();
+        populateCategorySelect();
+      }
+      console.log('Synced from postMessage:', e.data.key);
+    } catch(ex) {}
+  });
 });
 </script>
 
