@@ -2385,6 +2385,17 @@ window.addEventListener('storage', function(e) {
   if (e.key === 'arui_works' || e.key === 'arui_profile' || e.key === 'arui_categories') {
     syncData(e.key, e.newValue);
   }
+  if (e.key === 'arui_last_save') {
+    // Another frame saved data — pull latest from localStorage
+    try {
+      var lw = localStorage.getItem('arui_works');
+      var lp = localStorage.getItem('arui_profile');
+      var lc = localStorage.getItem('arui_categories');
+      if (lw) syncData('arui_works', lw);
+      if (lp) syncData('arui_profile', lp);
+      if (lc) syncData('arui_categories', lc);
+    } catch(ex) {}
+  }
 });
 
 // Cross-frame postMessage sync (works in Canvas iframes where storage events don't fire)
@@ -2393,6 +2404,26 @@ window.addEventListener('message', function(e) {
     syncData(e.data.key, e.data.value);
   }
 });
+
+// Polling fallback — checks arui_last_save every 2s for isolated Canvas iframes
+(function() {
+  var _lastKnownSave = '';
+  try { _lastKnownSave = localStorage.getItem('arui_last_save') || ''; } catch(e) {}
+  setInterval(function() {
+    try {
+      var current = localStorage.getItem('arui_last_save') || '';
+      if (current && current !== _lastKnownSave) {
+        _lastKnownSave = current;
+        var lw = localStorage.getItem('arui_works');
+        var lp = localStorage.getItem('arui_profile');
+        var lc = localStorage.getItem('arui_categories');
+        if (lw) syncData('arui_works', lw);
+        if (lp) syncData('arui_profile', lp);
+        if (lc) syncData('arui_categories', lc);
+      }
+    } catch(e) {}
+  }, 2000);
+})();
 
 // Load data from server on page load
 (function() {
