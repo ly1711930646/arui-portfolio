@@ -1615,17 +1615,6 @@ let WORKS = [...DEFAULT_WORKS];
 const DEFAULT_CATEGORIES = ["APP设计", "网页设计", "B端设计", "跨境电商设计", "国内电商设计", "画册设计", "包装设计"];
 let CATEGORIES = [...DEFAULT_CATEGORIES];
 
-// Generate filter bar pills dynamically
-(function() {
-  var bar = document.getElementById('filter-bar');
-  if (!bar) return;
-  var html = '<button class="filter-pill filter-pill--active" role="tab" aria-selected="true" data-category="全部">全部</button>';
-  CATEGORIES.forEach(function(cat) {
-    html += '<button class="filter-pill" role="tab" aria-selected="false" data-category="' + cat + '">' + cat + '</button>';
-  });
-  bar.innerHTML = html;
-})();
-
 // Default profile data
 const DEFAULT_PROFILE = {
   name: '阿睿',
@@ -1662,6 +1651,17 @@ let PROFILE = DEFAULT_PROFILE;
     var lc = localStorage.getItem('arui_categories');
     if (lc) CATEGORIES = JSON.parse(lc);
   } catch(e) {}
+
+  /* Generate filter bar pills with correct categories */
+  var bar = document.getElementById('filter-bar');
+  if (bar) {
+    var html = '<button class="filter-pill filter-pill--active" role="tab" aria-selected="true" data-category="全部">全部</button>';
+    CATEGORIES.forEach(function(cat) {
+      html += '<button class="filter-pill" role="tab" aria-selected="false" data-category="' + cat + '">' + cat + '</button>';
+    });
+    bar.innerHTML = html;
+  }
+
   /* Reveal page */
   document.body.classList.add('page-ready');
 })();
