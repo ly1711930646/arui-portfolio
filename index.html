@@ -106,11 +106,12 @@ img { display: block; max-width: 100%; }
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  width: min(680px, calc(100vw - 56px));
+  justify-content: center;
+  gap: 12px;
+  width: max-content;
+  max-width: calc(100vw - 40px);
   min-height: 52px;
-  padding: 8px 9px 8px 12px;
+  padding: 8px 12px 8px 16px;
   border: 1px solid rgba(255,255,255,0.14);
   border-radius: 999px;
   background: rgba(8,8,8,0.48);
@@ -125,6 +126,7 @@ img { display: block; max-width: 100%; }
 .nav-orbit-mark {
   position: relative;
   flex: 0 0 auto;
+  flex-shrink: 0;
   width: 20px;
   height: 20px;
   border: 1px solid rgba(255,255,255,0.16);
@@ -158,10 +160,11 @@ img { display: block; max-width: 100%; }
   gap: 9px;
   color: #fff;
   white-space: nowrap;
-  font-size: 0.7rem;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0;
+  flex-shrink: 0;
 }
 .hero-brand span:last-child { opacity: 0.86; }
 
@@ -176,12 +179,13 @@ img { display: block; max-width: 100%; }
   min-height: 34px;
   align-items: center;
   justify-content: center;
-  padding: 0 12px;
+  padding: 0 14px;
   border: 1px solid transparent;
   border-radius: 999px;
   color: rgba(255,255,255,0.7);
-  font-size: 0.7rem;
+  font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
   line-height: 1;
   transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
 }
@@ -1331,14 +1335,19 @@ img { display: block; max-width: 100%; }
 
 /* ─── Responsive ─── */
 @media (max-width: 1100px) {
-  .hero-nav { top: 22px; width: min(620px, calc(100vw - 40px)); }
+  .hero-nav { top: 22px; }
   .main { padding: 0 32px var(--section-gap); }
 }
 
 @media (max-width: 768px) {
-  .hero-nav { top: 14px; width: calc(100vw - 28px); min-height: 48px; }
-  .hero-brand, .hero-menu a { font-size: 0.56rem; }
-  .hero-menu a:not(.nav-cta) { display: none; }
+  .hero-nav { top: 14px; min-height: 44px; gap: 6px; padding: 6px 8px 6px 12px; }
+  .nav-orbit-mark { width: 16px; height: 16px; }
+  .nav-orbit-mark::before { top: 4px; right: 4px; bottom: 4px; left: 4px; }
+  .hero-brand { font-size: 13px; gap: 6px; }
+  .hero-menu { gap: 3px; }
+  .hero-menu a { font-size: 12px; min-height: 30px; padding: 0 10px; }
+  .hero-menu a[href="admin.html"] { display: none; }
+  .hero-menu .nav-cta { padding: 0 12px; font-size: 12px; }
   .main { padding: 0 20px 80px; }
   .works-grid {
     grid-template-columns: repeat(2, 1fr);
