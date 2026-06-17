@@ -1719,14 +1719,32 @@ let PROFILE = DEFAULT_PROFILE;
     if (!isMobile && mouse.x > -9000) {
       smoothMouse.x += (mouse.x - smoothMouse.x) * 0.12;
       smoothMouse.y += (mouse.y - smoothMouse.y) * 0.12;
-      var g = ctx.createRadialGradient(smoothMouse.x, smoothMouse.y, 0, smoothMouse.x, smoothMouse.y, 160);
-      g.addColorStop(0, 'rgba(255,255,255,0.15)');
-      g.addColorStop(0.3, 'rgba(255,255,255,0.06)');
-      g.addColorStop(0.7, 'rgba(255,255,255,0.02)');
-      g.addColorStop(1, 'rgba(255,255,255,0)');
+      var mx = smoothMouse.x, my = smoothMouse.y;
+      // Soft orange radial glow
+      var g = ctx.createRadialGradient(mx, my, 0, mx, my, 120);
+      g.addColorStop(0, 'rgba(255,140,66,0.10)');
+      g.addColorStop(0.4, 'rgba(255,140,66,0.04)');
+      g.addColorStop(1, 'rgba(255,140,66,0)');
       ctx.beginPath();
-      ctx.arc(smoothMouse.x, smoothMouse.y, 160, 0, Math.PI * 2);
+      ctx.arc(mx, my, 120, 0, Math.PI * 2);
       ctx.fillStyle = g;
+      ctx.fill();
+      // Outer orange ring
+      ctx.beginPath();
+      ctx.arc(mx, my, 28, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,140,66,0.55)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Inner faint ring
+      ctx.beginPath();
+      ctx.arc(mx, my, 14, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,140,66,0.22)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Center dot
+      ctx.beginPath();
+      ctx.arc(mx, my, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,140,66,0.75)';
       ctx.fill();
     }
 
