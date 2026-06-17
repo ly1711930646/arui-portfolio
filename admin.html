@@ -2016,6 +2016,12 @@ function saveDataToServer() {
       return r.json().then(function(data) {
         if (r.ok && data.content) {
           ghConfig.dataSha = data.content.sha;
+          // Also persist to localStorage for cross-frame sync and offline access
+          try {
+            localStorage.setItem('arui_works', JSON.stringify(works));
+            localStorage.setItem('arui_profile', JSON.stringify(profile));
+            localStorage.setItem('arui_categories', JSON.stringify(categories));
+          } catch(e) {}
           showToast('数据已保存到 GitHub', 'success');
           broadcastToFrames('arui_works', JSON.stringify(works));
           broadcastToFrames('arui_profile', JSON.stringify(profile));
@@ -2048,10 +2054,18 @@ function saveDataToServer() {
   }
 }
 
-// Fallback: save to local server
+// Fallback: save to local server + localStorage
 function saveDataLocal() {
   var API_BASE = 'http://127.0.0.1:8765';
   var payload = { works: works, profile: profile, categories: categories };
+
+  // Always persist to localStorage so data survives refresh
+  try {
+    localStorage.setItem('arui_works', JSON.stringify(works));
+    localStorage.setItem('arui_profile', JSON.stringify(profile));
+    localStorage.setItem('arui_categories', JSON.stringify(categories));
+  } catch(e) {}
+
   fetch(API_BASE + '/api/data', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -2063,7 +2077,11 @@ function saveDataLocal() {
       broadcastToFrames('arui_categories', JSON.stringify(categories));
     }
   }).catch(function(e) {
-    console.warn('Local save failed:', e);
+    console.warn('Local save failed, but data saved to localStorage:', e);
+    // Still broadcast even if server is unavailable
+    broadcastToFrames('arui_works', JSON.stringify(works));
+    broadcastToFrames('arui_profile', JSON.stringify(profile));
+    broadcastToFrames('arui_categories', JSON.stringify(categories));
   });
 }
 
@@ -2107,7 +2125,21 @@ function loadFromLocal() {
       if (data.categories && Array.isArray(data.categories)) categories = data.categories;
     })
     .catch(function(e) {
-      console.warn('Failed to load data, using defaults:', e);
+      // Server unavailable — try localStorage as fallback
+      console.warn('Local server unavailable, trying localStorage:', e);
+      try {
+        var lw = localStorage.getItem('arui_works');
+        var lp = localStorage.getItem('arui_profile');
+        var lc = localStorage.getItem('arui_categories');
+        if (lw) works = JSON.parse(lw);
+        if (lp) profile = JSON.parse(lp);
+        if (lc) categories = JSON.parse(lc);
+        if (lw || lp || lc) {
+          console.log('Data loaded from localStorage');
+          return;
+        }
+      } catch(ex) {}
+      console.warn('Failed to load data, using defaults');
     });
 }
 
