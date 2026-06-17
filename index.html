@@ -1421,8 +1421,8 @@ img { display: block; max-width: 100%; }
 <header class="hero-nav" aria-label="主导航" data-component="nav">
   <span class="nav-orbit-mark" aria-hidden="true"></span>
   <a class="hero-brand" href="#hero" aria-label="ARUI Home">
-    <span data-profile-field="brandLeft">李杨</span>
-    <span data-profile-field="brandRight">ARUI</span>
+    <span data-profile-field="brandLeft">😊</span>
+    <span data-profile-field="brandRight"> </span>
   </a>
   <nav class="hero-menu" aria-label="作品集导航">
     <a href="#hero">HOME</a>
@@ -1437,11 +1437,11 @@ img { display: block; max-width: 100%; }
 
 <!-- Hero -->
 <section class="hero" id="hero" data-component="hero">
-  <div class="hero__badge" data-profile-field="heroBadge">UI/UX Designer</div>
+  <div class="hero__badge" data-profile-field="heroBadge">UI/平面视觉设计</div>
   <div class="hero__name-wrap">
-    <h1 class="hero__name"><span data-profile-field="heroNameLeft">李杨</span><span data-profile-field="heroNameRight">ARUI</span></h1>
+    <h1 class="hero__name"><span data-profile-field="heroNameLeft">李杨</span><span data-profile-field="heroNameRight">在线作品合集</span></h1>
   </div>
-  <p class="hero__subtitle" data-profile-field="heroTagline">专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。</p>
+  <p class="hero__subtitle" data-profile-field="heroTagline">UI / 视觉设计师 | 专注品牌与界面视觉</p>
   <div class="hero__scroll" onclick="document.getElementById('works-section').scrollIntoView({behavior:'smooth'})" role="button" aria-label="向下滚动到作品集">
     <div class="hero__scroll-mouse">
       <div class="hero__scroll-wheel"></div>
@@ -1463,58 +1463,58 @@ img { display: block; max-width: 100%; }
       </div>
       <div class="profile-info">
         <div class="profile-header">
-          <h2 class="profile-name" data-profile-field="name">阿睿 ARUI</h2>
-          <p class="profile-title" data-profile-field="title">UI/UX Designer</p>
+          <h2 class="profile-name" data-profile-field="name">李杨</h2>
+          <p class="profile-title" data-profile-field="title">UI/平面视觉设计</p>
         </div>
         
         <div class="profile-details">
           <div class="profile-item">
             <span class="profile-item__label">姓名</span>
-            <span class="profile-item__value" data-profile-field="name">阿睿</span>
+            <span class="profile-item__value" data-profile-field="name">李杨</span>
           </div>
-          
+
           <div class="profile-item">
             <span class="profile-item__label">性别</span>
             <span class="profile-item__value" data-profile-field="gender">男</span>
           </div>
-          
+
           <div class="profile-item">
             <span class="profile-item__label">年龄</span>
             <span class="profile-item__value"><span data-profile-field="age">28</span>岁</span>
           </div>
-          
+
           <div class="profile-item">
             <span class="profile-item__label">联系方式</span>
             <span class="profile-item__value">
-              <a href="mailto:" data-profile-link="email">arui@example.com</a>
+              <a href="mailto:1711930646@qq.com" data-profile-link="email">1711930646@qq.com</a>
             </span>
           </div>
-          
+
           <div class="profile-item">
             <span class="profile-item__label">电话</span>
             <span class="profile-item__value">
-              <a href="tel:" data-profile-link="phone">+86 138-0013-8000</a>
+              <a href="tel:+8617607169406" data-profile-link="phone">+86 176-0716-9406 (vx同号)</a>
             </span>
           </div>
-          
+
           <div class="profile-item">
             <span class="profile-item__label">求职方向</span>
-            <span class="profile-item__value" data-profile-field="direction">UI/UX设计师 · 产品设计师</span>
+            <span class="profile-item__value" data-profile-field="direction">UI/视觉设计师</span>
           </div>
-          
+
           <div class="profile-item">
             <span class="profile-item__label">工作经验</span>
             <span class="profile-item__value" data-profile-field="experience">5年</span>
           </div>
-          
+
           <div class="profile-item">
             <span class="profile-item__label">所在地</span>
-            <span class="profile-item__value" data-profile-field="location">北京</span>
+            <span class="profile-item__value" data-profile-field="location">深圳市</span>
           </div>
         </div>
-        
+
         <div class="profile-bio" data-profile-field="bio">
-          专注APP、网页、车机及多领域数字体验设计,擅长将创意与用户需求结合,打造直观、美观且易用的产品界面。具备丰富的B端和C端项目经验,致力于通过设计提升产品价值和用户体验。
+          精通 Figma/PS/AI 全流程工具。拥有多平台项目经验，能高效完成从创意发散到交付的全链路设计。
         </div>
       </div>
     </div>
@@ -1606,47 +1606,48 @@ img { display: block; max-width: 100%; }
    Portfolio Data - Load from localStorage or use default
    ═══════════════════════════════════════════ */
 const DEFAULT_WORKS = [
-  { id:1,  title:"JunyStar-Web Design",           category:"网页设计",      link:"https://www.zcool.com.cn/work/ZNzMzNzE1NTI=.html",     thumb:"https://img.zcool.cn/community/69ca0ca586e7bp8sef9087620.png?k=a71d328954003528b94c7a151fb81da8&t=6a302180" },
-  { id:3,  title:"数藏交流平台-Digital Link",      category:"APP设计",       link:"https://www.zcool.com.cn/work/ZNjc2MTM5NDQ=.html",     thumb:"https://img.zcool.cn/community/031fovecdy8oufiyrwdhlbc3231.png?k=5365554b27b1effa70918cc12512219f&t=6a302180" },
-  { id:4,  title:"It's Me APP",                   category:"APP设计",       link:"https://www.zcool.com.cn/work/ZNjc1NjA4MDA=.html",     thumb:"https://img.zcool.cn/community/031j5civkdef3ol4oro08tq3536.png?k=8dd84fc1f8b7569eea99661472399bdb&t=6a302180" },
-  { id:5,  title:"HMI Concept Design-2023",       category:"跨境电商设计",  link:"https://www.zcool.com.cn/work/ZNjczMjEzMjg=.html",     thumb:"https://img.zcool.cn/community/031ntpqe48b0q6namycrn1n3334.png?k=ddcf0b582fde83d942c42447c9d8d4b7&t=6a302180" },
-  { id:6,  title:"2022 设计作品合集",              category:"综合设计",      link:"https://www.zcool.com.cn/work/ZNjQ0Mjk2MDA=.html",     thumb:"https://img.zcool.cn/community/0311esuwxi9z9bpryney0e93332.png?k=73fb426fff3073b0eaf604d25f5139c5&t=6a302180" },
-  { id:7,  title:"MOTA 饮水智能面板方案设计",       category:"画册设计",      link:"https://www.zcool.com.cn/work/ZNjQzMDY4NzI=.html",     thumb:"https://img.zcool.cn/community/031cdn8ibxxarryydglvhjj3938.png?k=5f416a89e08d93a87ea3a2af37b25b3f&t=6a302180" },
-  { id:8,  title:"About-网页设计集",                category:"网页设计",      link:"https://www.zcool.com.cn/work/ZNjIwNTE1NjA=.html",     thumb:"https://img.zcool.cn/community/031ny6e4t6jigh0odporbn43838.png?k=d4a376d217ac455cead631d682a9bd99&t=6a302180" },
-  { id:9,  title:"About-B端项目合集",               category:"B端设计",       link:"https://www.zcool.com.cn/work/ZNjE4NDE1NzY=.html",     thumb:"https://img.zcool.cn/community/031mdeexjvid9j6ii6kavth3230.png?k=82917779d7da8dd8533a75833daeb7ba&t=6a302180" },
-  { id:10, title:"一些杂货整理",                     category:"综合设计",      link:"https://www.zcool.com.cn/work/ZNjA3NDAwNDg=.html",     thumb:"https://img.zcool.cn/community/031g8zjyiw4onwbnumex2wb3939.png?k=013f30592b993180235b7c5d84c2de3c&t=6a302180" },
-  { id:11, title:"比亚迪车机主题设计-蓝色星河",      category:"跨境电商设计",  link:"https://www.zcool.com.cn/work/ZNjAyNTk1ODQ=.html",     thumb:"https://img.zcool.cn/community/031regd3ttcu1qvpi9ceegd3035.png?k=f010d9fdfc87f509a8f3a2734e943c9b&t=6a302180" },
-  { id:12, title:"空状态插画设计-飞书",              category:"国内电商设计",  link:"https://www.zcool.com.cn/work/ZNTk3MTE5OTI=.html",     thumb:"https://img.zcool.cn/community/031pcs7wn8lrh4kckxo68qm3833.png?k=7757215993bd12ef5019ee6920f14a11&t=6a302180" },
-  { id:13, title:"智选小程序-教学管理工具",           category:"APP设计",       link:"https://www.zcool.com.cn/work/ZNTYwMDc3NzY=.html",     thumb:"https://img.zcool.cn/community/031i0eo3n0f4nlnexmpvfrj3235.png?k=ca2dae58484bed3aa561796439ce5338&t=6a302180" },
-  { id:14, title:"云及数据大屏编辑平台",              category:"B端设计",       link:"https://www.zcool.com.cn/work/ZNTQ2MzgyOTI=.html",     thumb:"https://img.zcool.cn/community/011fa96119e95f11013eaf70f2d098.jpg?k=db128bd155f61acf242f18d70fd38e1b&t=6a302180" }
+  { id:1, title:"健康医疗—后台管理系统", category:"网页设计", link:"https://www.zcool.com.cn/work/ZNzMzNzE1NTI=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_1_1781524507052.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524609488_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524615082_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524620339_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524626924_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524629595_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524666904_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524676861_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524683525_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524690656_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524696281_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524702769_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524713142_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_1_1781524719476_0.jpg"] },
+  { id:2, title:"友趣-社交APP", category:"APP设计", link:"https://www.zcool.com.cn/work/ZNzAyMjkyNDA=.html", thumb:"https://iili.io/Cnra7N2.jpg", images:["https://iili.io/CnraMSj.jpg","https://iili.io/Cnrc9b2.jpg","https://iili.io/Cnrl1vj.jpg","https://iili.io/CnrlsFn.jpg","https://iili.io/Cnr0K9j.jpg","https://iili.io/Cnr0xP1.jpg","https://iili.io/Cnr0coN.jpg","https://iili.io/Cnr0XRf.jpg","https://iili.io/Cnr0p5J.jpg","https://iili.io/CnrEzva.jpg","https://iili.io/CnrM5gt.jpg","https://iili.io/CnrWnov.jpg"] },
+  { id:3, title:"VPN-工具APP", category:"APP设计", link:"https://www.zcool.com.cn/work/ZNjc2MTM5NDQ=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_3_1781523954725.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781523991111_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781523996082_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524000926_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524003724_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524009284_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524011759_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524013980_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524016052_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524025030_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524042767_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524050365_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524058322_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524066828_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_3_1781524072585_0.jpg"] },
+  { id:5, title:"家庭摄像头-安防", category:"跨境电商设计", link:"https://www.zcool.com.cn/work/ZNjczMjEzMjg=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_5_1781537187470.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_5_1781540516367_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_5_1781540522413_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_5_1781540527762_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_5_1781540532864_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_5_1781540535656_0.jpg"] },
+  { id:7, title:"表盘设计", category:"硬件表盘UI设计", link:"https://www.zcool.com.cn/work/ZNjQzMDY4NzI=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_7_1781525239795.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525342403_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525347411_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525351160_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525353983_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525364766_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525368090_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525371524_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525374522_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525382726_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_7_1781525385666_0.jpg"] },
+  { id:11, title:"除草机-庭院工具", category:"跨境电商设计", link:"https://www.zcool.com.cn/work/ZNjAyNTk1ODQ=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_11_1781537600854.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_11_1781539952094_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_11_1781539957855_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_11_1781539961743_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_11_1781539975122_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_11_1781539980386_0.jpg"] },
+  { id:15, title:"智能穿戴-手表", category:"跨境电商设计", link:"https://www.zcool.com.cn/work/ZNzM0OTU2NjQ=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_15_1781535696768.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_15_1781540898990_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_15_1781540901785_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_15_1781540908135_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_15_1781540911124_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_15_1781540914048_0.jpg"] },
+  { id:16, title:"新能源-品牌提案", category:"品牌设计", link:"https://www.zcool.com.cn/work/ZNzMxMjQ4OTY=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_16_1781568937426.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569011524_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569011549_1.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569020763_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569025691_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569029677_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569034397_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569037155_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569040313_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569043078_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569046318_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569060052_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569062914_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569070585_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569073090_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569076764_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569083482_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569086446_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_16_1781569089352_0.jpg"] },
+  { id:17, title:"语音翻译王-工具APP", category:"APP设计", link:"https://www.zcool.com.cn/work/ZNzMxMjQ4OTY=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_17_1781571797162.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781572158304_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781572167094_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781572173234_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781572639087_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781572642162_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781572645107_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573073944_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573076680_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573080079_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573082824_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573085923_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573469621_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573474554_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573479244_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573484157_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573488269_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573491443_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573495095_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573498769_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_17_1781573501767_0.jpg"] },
+  { id:18, title:"AUSEN -产品画册", category:"画册设计", link:"https://www.zcool.com.cn/work/ZNzMxMjQ4OTY=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_18_1781570396478.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_18_1781570400947_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_18_1781570404075_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_18_1781570407251_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_18_1781570410670_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_18_1781570413326_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_18_1781570416543_0.jpg"] },
+  { id:19, title:"宠物玩具", category:"跨境电商设计", link:"https://www.zcool.com.cn/work/ZNzI1Mjg5NjA=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_19_1781579192821.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_19_1781579573546_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_19_1781579595779_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_19_1781579608606_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_19_1781579611618_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_19_1781579614664_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_19_1781579619004_0.jpg"] },
+  { id:20, title:"厨房用品-多功能电蒸锅", category:"国内电商设计", link:"https://www.zcool.com.cn/work/ZNzE2MzMzMjQ=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_20_1781582836777.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_20_1781582891436_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_20_1781582898030_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_20_1781582904766_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_20_1781582909158_0.jpg"] },
+  { id:21, title:"大健康", category:"跨境电商设计", link:"https://www.zcool.com.cn/work/ZNzE2MzMzMjQ=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_21_1781584076597.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_21_1781584080526_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_21_1781584085106_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_21_1781584088879_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_21_1781584099576_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_21_1781584104506_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_21_1781584109605_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_21_1781584112712_0.jpg"] },
+  { id:22, title:"健身-智能单车", category:"国内电商设计", link:"https://www.zcool.com.cn/work/ZNzE2MzMzMjQ=.html", thumb:"https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_22_1781586897241.jpg", images:["https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586905749_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586911492_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586915932_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586920287_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586923398_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586930023_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586935266_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586940622_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586945457_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586950654_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586955015_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586963001_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586966572_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586969387_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586973480_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586977390_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586980320_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586990540_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586995419_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781586997757_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781587000013_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781587002379_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781587008544_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781587011258_0.jpg","https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_22_1781587013811_0.jpg"] }
 ];
 
 // Load works — defaults used until server data arrives
 let WORKS = [...DEFAULT_WORKS];
 
 // Load categories from server or use default
-const DEFAULT_CATEGORIES = ["APP设计", "网页设计", "B端设计", "跨境电商设计", "国内电商设计", "画册设计", "包装设计"];
+const DEFAULT_CATEGORIES = ["APP设计", "网页设计", "跨境电商设计", "国内电商设计", "硬件表盘UI设计", "画册设计", "品牌设计"];
 let CATEGORIES = [...DEFAULT_CATEGORIES];
 
 // Default profile data
 const DEFAULT_PROFILE = {
-  name: '阿睿',
-  title: 'UI/UX Designer',
+  name: '李杨',
+  title: 'UI/平面视觉设计',
   gender: '男',
-  age: 28,
-  email: 'arui@example.com',
-  phone: '+86 138-0013-8000',
-  direction: 'UI/UX设计师 · 产品设计师',
+  age: '28',
+  email: '1711930646@qq.com',
+  phone: '+86 176-0716-9406 (vx同号)',
+  direction: 'UI/视觉设计师',
   experience: '5年',
-  location: '北京',
-  bio: '专注APP、网页、车机及多领域数字体验设计,擅长将创意与用户需求结合,打造直观、美观且易用的产品界面。具备丰富的B端和C端项目经验,致力于通过设计提升产品价值和用户体验。',
-  avatar: null,
-  heroBadge: 'UI/UX DESIGNER',
-  heroNameLeft: '阿睿',
-  heroNameRight: 'ARUI',
-  heroTagline: '专注APP、网页、车机及多领域数字体验设计，用创意连接用户与产品。',
-  brandLeft: '李杨',
-  brandRight: 'ARUI',
+  location: '深圳市',
+  bio: '精通 Figma/PS/AI 全流程工具。\n拥有多平台项目经验，能高效完成从创意发散到交付的全链路设计。',
+  avatar: 'https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/avatar.jpg',
+  heroBadge: 'UI/平面视觉设计',
+  heroNameLeft: '李杨',
+  heroNameRight: '在线作品合集',
+  heroTagline: 'UI / 视觉设计师 | 专注品牌与界面视觉',
+  brandLeft: '😊',
+  brandRight: ' ',
   sectionLabel: 'Selected Works',
   sectionTitle: '作品集'
 };
