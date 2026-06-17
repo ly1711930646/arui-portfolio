@@ -666,6 +666,147 @@ img { display: block; max-width: 100%; }
   pointer-events: none;
 }
 
+/* ─── Works Carousel ─── */
+.works-carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.works-carousel-viewport {
+  overflow: hidden;
+  flex: 1;
+  border-radius: var(--radius);
+}
+
+.works-carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.works-carousel-page {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 12px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.works-carousel-page .work-card {
+  border-radius: 14px;
+  border: none;
+  aspect-ratio: 16 / 10;
+}
+
+.works-carousel-page .work-card__media {
+  aspect-ratio: unset;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+}
+
+.works-carousel-page .work-card__info {
+  display: none;
+}
+
+.works-carousel-page .work-card__overlay {
+  border-radius: 14px;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  padding: 16px;
+  opacity: 0;
+}
+
+.works-carousel-page .work-card:hover .work-card__overlay {
+  opacity: 1;
+}
+
+.works-carousel-page .work-card__view {
+  font-size: 11px;
+  padding: 6px 16px;
+}
+
+/* Carousel nav arrows */
+.carousel-nav {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  color: var(--fg);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.carousel-nav:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.08);
+}
+
+.carousel-nav:active {
+  transform: scale(0.96);
+}
+
+.carousel-nav--disabled {
+  opacity: 0.25;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Carousel page indicator dots */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.carousel-dot--active {
+  background: var(--primary);
+  width: 24px;
+  border-radius: 4px;
+}
+
+@media (max-width: 1024px) {
+  .works-carousel-page {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  .carousel-nav { width: 38px; height: 38px; }
+}
+
+@media (max-width: 768px) {
+  .works-carousel-wrapper { gap: 8px; }
+  .works-carousel-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+  }
+  .works-carousel-page .work-card { aspect-ratio: 16 / 9; }
+  .carousel-nav { width: 32px; height: 32px; font-size: 14px; }
+  .carousel-nav svg { width: 14px; height: 14px; }
+}
+
 .work-card--showing {
   opacity: 1;
   transform: translateY(0);
@@ -1551,8 +1692,19 @@ img { display: block; max-width: 100%; }
     <span class="scroll-hint__text">向下滑动浏览更多作品</span>
   </div>
 
-  <!-- Works Grid -->
-  <div class="works-grid" id="works-grid" data-component="works-grid" data-od-id="works-grid"></div>
+  <!-- Works Carousel -->
+  <div class="works-carousel-wrapper" id="works-carousel" data-component="works-grid" data-od-id="works-grid">
+    <button class="carousel-nav carousel-nav--prev carousel-nav--disabled" id="carousel-prev" aria-label="上一页" onclick="carouselNav(-1)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <div class="works-carousel-viewport">
+      <div class="works-carousel-track" id="works-grid"></div>
+    </div>
+    <button class="carousel-nav carousel-nav--next" id="carousel-next" aria-label="下一页" onclick="carouselNav(1)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+  <div class="carousel-dots" id="carousel-dots"></div>
 </main>
 
 <!-- Footer -->
@@ -1935,82 +2087,111 @@ setTimeout(revealPage, 800);
 })();
 
 /* ═══════════════════════════════════════════
-   Render Works Grid
+   Render Works Carousel
    ═══════════════════════════════════════════ */
 (function() {
-  const grid = document.getElementById('works-grid');
+  var track = document.getElementById('works-grid');
+  var dotsContainer = document.getElementById('carousel-dots');
+  var prevBtn = document.getElementById('carousel-prev');
+  var nextBtn = document.getElementById('carousel-next');
+  var ITEMS_PER_PAGE = 9; /* 3 cols × 3 rows */
+  var currentPage = 0;
+  var totalPages = 1;
 
-  function renderCards(works) {
-    grid.innerHTML = '';
-    works.forEach(function(work, index) {
-      const card = document.createElement('div');
-      card.className = 'work-card';
-      card.setAttribute('data-category', work.category);
-      card.setAttribute('data-od-id', 'work-' + work.id);
-      card.setAttribute('data-work-id', work.id);
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', '查看 ' + work.title + ' 详情');
-      card.style.transitionDelay = (index * 50) + 'ms';
-      card.innerHTML =
-        '<div class="work-card__media">' +
-          '<img class="work-card__img" src="' + work.thumb + '" alt="' + work.title + ' 作品预览" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.style.background=\'linear-gradient(135deg,var(--surface),var(--surface-hover))\'">' +
-          '<div class="work-card__overlay">' +
-            '<span class="work-card__view">查看详情</span>' +
-          '</div>' +
+  function createCard(work, index) {
+    var card = document.createElement('div');
+    card.className = 'work-card work-card--visible';
+    card.setAttribute('data-category', work.category);
+    card.setAttribute('data-od-id', 'work-' + work.id);
+    card.setAttribute('data-work-id', work.id);
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', '查看 ' + work.title + ' 详情');
+    card.innerHTML =
+      '<div class="work-card__media">' +
+        '<img class="work-card__img" src="' + work.thumb + '" alt="' + work.title + ' 作品预览" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.style.background=\'linear-gradient(135deg,var(--surface),var(--surface-hover))\'">' +
+        '<div class="work-card__overlay">' +
+          '<span class="work-card__view">查看详情</span>' +
         '</div>' +
-        '<div class="work-card__info">' +
-          '<p class="work-card__category">' + work.category + '</p>' +
-          '<h3 class="work-card__title">' + work.title + '</h3>' +
-        '</div>';
-
-      /* Click to open modal */
-      card.addEventListener('click', function() { openModal(work); });
-      card.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(work); }
-      });
-
-      grid.appendChild(card);
+      '</div>' +
+      '<div class="work-card__info">' +
+        '<p class="work-card__category">' + work.category + '</p>' +
+        '<h3 class="work-card__title">' + work.title + '</h3>' +
+      '</div>';
+    card.addEventListener('click', function() { openModal(work); });
+    card.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(work); }
     });
+    return card;
+  }
 
-    /* If grid is already in viewport (filter re-render), reveal immediately with stagger */
-    var rect = grid.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      var cards = grid.querySelectorAll('.work-card');
-      cards.forEach(function(c, i) {
-        setTimeout(function() { c.classList.add('work-card--visible'); }, 50 * i);
-      });
+  function renderCarousel(works) {
+    track.innerHTML = '';
+    currentPage = 0;
+    totalPages = Math.ceil(works.length / ITEMS_PER_PAGE) || 1;
+
+    for (var p = 0; p < totalPages; p++) {
+      var page = document.createElement('div');
+      page.className = 'works-carousel-page';
+      var start = p * ITEMS_PER_PAGE;
+      var end = Math.min(start + ITEMS_PER_PAGE, works.length);
+      for (var i = start; i < end; i++) {
+        page.appendChild(createCard(works[i], i));
+      }
+      track.appendChild(page);
+    }
+
+    renderDots();
+    updateNavState();
+    goToPage(0);
+  }
+
+  function renderDots() {
+    dotsContainer.innerHTML = '';
+    for (var d = 0; d < totalPages; d++) {
+      var dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (d === currentPage ? ' carousel-dot--active' : '');
+      dot.setAttribute('aria-label', '第 ' + (d + 1) + ' 页');
+      dot.setAttribute('data-page', d);
+      dot.addEventListener('click', function() { goToPage(parseInt(this.getAttribute('data-page'))); });
+      dotsContainer.appendChild(dot);
     }
   }
 
-  renderCards(WORKS);
-
-  /* IntersectionObserver for scroll reveal (re-trigger on filter) */
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('work-card--visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-    /* Observe future cards via mutation observer */
-    const gridObserver = new MutationObserver(function() {
-      grid.querySelectorAll('.work-card:not(.work-card--visible)').forEach(function(card) {
-        observer.observe(card);
-      });
+  function goToPage(page) {
+    currentPage = Math.max(0, Math.min(page, totalPages - 1));
+    track.style.transform = 'translateX(-' + (currentPage * 100) + '%)';
+    updateNavState();
+    /* Update dots */
+    var dots = dotsContainer.querySelectorAll('.carousel-dot');
+    dots.forEach(function(dot, i) {
+      dot.classList.toggle('carousel-dot--active', i === currentPage);
     });
-    gridObserver.observe(grid, { childList: true });
   }
 
-  /* Safety net: ensure all cards visible after 2s even if observer fails */
-  setTimeout(function() {
-    grid.querySelectorAll('.work-card:not(.work-card--visible)').forEach(function(c) {
-      c.classList.add('work-card--visible');
-    });
-  }, 2000);
+  function updateNavState() {
+    if (prevBtn) prevBtn.classList.toggle('carousel-nav--disabled', currentPage === 0);
+    if (nextBtn) nextBtn.classList.toggle('carousel-nav--disabled', currentPage >= totalPages - 1);
+  }
+
+  /* Global carousel nav function (called from onclick) */
+  window.carouselNav = function(dir) { goToPage(currentPage + dir); };
+
+  renderCarousel(WORKS);
+
+  /* Touch swipe support */
+  var touchStartX = 0;
+  var viewport = track.parentElement;
+  if (viewport) {
+    viewport.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+    viewport.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) goToPage(currentPage + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+  }
+
+  /* Expose for filter and sync use */
+  window.renderWorksCarousel = renderCarousel;
 
   /* ═══════════════════════════════════════════
      Filter Logic
@@ -2036,7 +2217,7 @@ setTimeout(revealPage, 800);
         this.setAttribute('aria-selected', 'true');
 
         /* Animate out current cards */
-        var currentCards = grid.querySelectorAll('.work-card');
+        var currentCards = track.querySelectorAll('.work-card');
         currentCards.forEach(function(c) {
           c.classList.add('work-card--hiding');
           c.classList.remove('work-card--visible');
@@ -2045,7 +2226,7 @@ setTimeout(revealPage, 800);
         /* After hide animation, render filtered and show */
         setTimeout(function() {
           var filtered = cat === '全部' ? WORKS : WORKS.filter(function(w) { return w.category === cat; });
-          renderCards(filtered);
+          renderCarousel(filtered);
         }, 320);
       });
     });
@@ -2329,36 +2510,8 @@ function syncData(key, newValue) {
   if (key === 'arui_works') {
     WORKS = JSON.parse(newValue) || [...DEFAULT_WORKS];
     try { localStorage.setItem('arui_works', newValue); } catch(e) {}
-    var grid = document.getElementById('works-grid');
-    if (grid) {
-      grid.innerHTML = '';
-      WORKS.forEach(function(work, index) {
-        var card = document.createElement('div');
-        card.className = 'work-card work-card--visible';
-        card.setAttribute('data-category', work.category);
-        card.setAttribute('data-od-id', 'work-' + work.id);
-        card.setAttribute('data-work-id', work.id);
-        card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
-        card.setAttribute('aria-label', '查看 ' + work.title + ' 详情');
-        card.style.transitionDelay = (index * 50) + 'ms';
-        card.innerHTML =
-          '<div class="work-card__media">' +
-            '<img class="work-card__img" src="' + work.thumb + '" alt="' + work.title + ' 作品预览" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\';this.parentElement.style.background=\'linear-gradient(135deg,var(--surface),var(--surface-hover))\'">' +
-            '<div class="work-card__overlay">' +
-              '<span class="work-card__view">查看详情</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="work-card__info">' +
-            '<p class="work-card__category">' + work.category + '</p>' +
-            '<h3 class="work-card__title">' + work.title + '</h3>' +
-          '</div>';
-        card.addEventListener('click', function() { openModal(work); });
-        card.addEventListener('keydown', function(ev) {
-          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openModal(work); }
-        });
-        grid.appendChild(card);
-      });
+    if (window.renderWorksCarousel) {
+      window.renderWorksCarousel(WORKS);
     }
   }
 
