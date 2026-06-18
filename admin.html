@@ -1935,10 +1935,11 @@ function ghRawUrl(path) {
 }
 
 function ghApiCall(method, path, body) {
+  var authPrefix = (ghConfig.token && ghConfig.token.indexOf('github_pat_') === 0) ? 'Bearer ' : 'token ';
   var opts = {
     method: method,
     headers: {
-      'Authorization': 'token ' + ghConfig.token,
+      'Authorization': authPrefix + ghConfig.token,
       'Accept': 'application/vnd.github.v3+json'
     }
   };
