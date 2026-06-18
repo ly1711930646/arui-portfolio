@@ -199,6 +199,17 @@ img { display: block; max-width: 100%; }
   line-height: 1;
   transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
 }
+@keyframes navBounce {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(0.88); }
+  50%  { transform: scale(1.08); }
+  70%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+.hero-menu a.nav-bounce,
+.filter-pill.nav-bounce {
+  animation: navBounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 .hero-menu a:hover {
   color: var(--primary);
   border-color: color-mix(in srgb, var(--primary) 28%, transparent);
@@ -2006,6 +2017,13 @@ setTimeout(revealPage, 800);
         navLinks.forEach(function(l) { l.classList.remove('active'); });
         link.classList.add('active');
       }
+      /* Bounce animation on click */
+      link.classList.remove('nav-bounce');
+      void link.offsetWidth;
+      link.classList.add('nav-bounce');
+      link.addEventListener('animationend', function() {
+        link.classList.remove('nav-bounce');
+      }, { once: true });
     });
   });
 })();
@@ -2064,6 +2082,14 @@ setTimeout(revealPage, 800);
     pills.forEach(function(pill) {
       pill.addEventListener('click', function() {
         var cat = this.getAttribute('data-category');
+        /* Bounce animation on every click */
+        this.classList.remove('nav-bounce');
+        void this.offsetWidth;
+        this.classList.add('nav-bounce');
+        this.addEventListener('animationend', function() {
+          this.classList.remove('nav-bounce');
+        }.bind(this), { once: true });
+
         if (cat === currentCategory) return;
         currentCategory = cat;
 
@@ -2327,21 +2353,18 @@ document.getElementById('year').textContent = new Date().getFullYear();
     }
   });
 
-  // Apply hero name font size if set
-  if (PROFILE.heroNameFontSize) {
-    var heroName = document.querySelector('.hero__name');
-    if (heroName) heroName.style.fontSize = PROFILE.heroNameFontSize + 'px';
+  // Apply hero name font sizes (desktop + mobile) via a single style tag
+  var heroFontSizeDesktop = PROFILE.heroNameFontSize || '80';
+  var heroFontSizeMobile = PROFILE.heroNameMobileFontSize || '48';
+  var heroFontStyle = document.getElementById('hero-font-size-style');
+  if (!heroFontStyle) {
+    heroFontStyle = document.createElement('style');
+    heroFontStyle.id = 'hero-font-size-style';
+    document.head.appendChild(heroFontStyle);
   }
-  // Apply mobile hero name font size via media query
-  if (PROFILE.heroNameMobileFontSize) {
-    var mobileStyle = document.getElementById('hero-mobile-font-size');
-    if (!mobileStyle) {
-      mobileStyle = document.createElement('style');
-      mobileStyle.id = 'hero-mobile-font-size';
-      document.head.appendChild(mobileStyle);
-    }
-    mobileStyle.textContent = '@media (max-width: 768px) { .hero__name { font-size: ' + PROFILE.heroNameMobileFontSize + 'px !important; } }';
-  }
+  heroFontStyle.textContent =
+    '.hero__name { font-size: ' + heroFontSizeDesktop + 'px !important; }' +
+    '@media (max-width: 768px) { .hero__name { font-size: ' + heroFontSizeMobile + 'px !important; } }';
   
   // Update profile links
   var emailLink = document.querySelector('[data-profile-link="email"]');
@@ -2401,19 +2424,18 @@ function syncData(key, newValue) {
       var field = el.getAttribute('data-profile-field');
       if (PROFILE[field] !== undefined) { el.textContent = PROFILE[field]; }
     });
-    if (PROFILE.heroNameFontSize) {
-      var heroNameSync = document.querySelector('.hero__name');
-      if (heroNameSync) heroNameSync.style.fontSize = PROFILE.heroNameFontSize + 'px';
+    // Apply hero name font sizes (desktop + mobile) via unified style tag
+    var syncDesktop = PROFILE.heroNameFontSize || '80';
+    var syncMobile = PROFILE.heroNameMobileFontSize || '48';
+    var syncStyle = document.getElementById('hero-font-size-style');
+    if (!syncStyle) {
+      syncStyle = document.createElement('style');
+      syncStyle.id = 'hero-font-size-style';
+      document.head.appendChild(syncStyle);
     }
-    if (PROFILE.heroNameMobileFontSize) {
-      var mobileStyleSync = document.getElementById('hero-mobile-font-size');
-      if (!mobileStyleSync) {
-        mobileStyleSync = document.createElement('style');
-        mobileStyleSync.id = 'hero-mobile-font-size';
-        document.head.appendChild(mobileStyleSync);
-      }
-      mobileStyleSync.textContent = '@media (max-width: 768px) { .hero__name { font-size: ' + PROFILE.heroNameMobileFontSize + 'px !important; } }';
-    }
+    syncStyle.textContent =
+      '.hero__name { font-size: ' + syncDesktop + 'px !important; }' +
+      '@media (max-width: 768px) { .hero__name { font-size: ' + syncMobile + 'px !important; } }';
     var emailLink = document.querySelector('[data-profile-link="email"]');
     var phoneLink = document.querySelector('[data-profile-link="phone"]');
     if (emailLink) { emailLink.href = 'mailto:' + PROFILE.email; emailLink.textContent = PROFILE.email; }
