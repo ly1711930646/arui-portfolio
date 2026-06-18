@@ -2041,6 +2041,7 @@ function saveDataToServer() {
             localStorage.setItem('arui_profile', JSON.stringify(profile));
             localStorage.setItem('arui_categories', JSON.stringify(categories));
             localStorage.setItem('arui_last_save', Date.now().toString());
+            localStorage.setItem('arui_data_ver', 'v3_2024');
           } catch(e) {}
           showToast('数据已保存到 GitHub', 'success');
           broadcastToFrames('arui_works', JSON.stringify(works));
@@ -2085,6 +2086,7 @@ function saveDataLocal() {
     localStorage.setItem('arui_profile', JSON.stringify(profile));
     localStorage.setItem('arui_categories', JSON.stringify(categories));
     localStorage.setItem('arui_last_save', Date.now().toString());
+    localStorage.setItem('arui_data_ver', 'v3_2024');
   } catch(e) {}
 
   fetch(API_BASE + '/api/data', {
