@@ -1553,6 +1553,14 @@ body {
               <span style="font-size: 12px; color: var(--fg-muted); white-space: nowrap;">40 — 120px</span>
             </div>
           </div>
+
+          <div class="form-group">
+            <label class="form-label">Hero 名称字号（移动端）<span id="heroNameMobileFontSizeValue" style="color: var(--fg-muted); font-weight: 400;">48px</span></label>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <input type="range" id="profile-heroNameMobileFontSize" min="24" max="80" value="48" style="flex: 1; accent-color: var(--primary);">
+              <span style="font-size: 12px; color: var(--fg-muted); white-space: nowrap;">24 — 80px</span>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -1881,6 +1889,7 @@ let profile = {
   heroNameLeft: '李杨',
   heroNameRight: '在线作品合集',
   heroNameFontSize: '80',
+  heroNameMobileFontSize: '48',
   heroTagline: 'UI / 视觉设计师 | 专注品牌与界面视觉',
   brandLeft: '😊',
   brandRight: ' ',
@@ -2694,6 +2703,14 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('heroNameFontSizeValue').textContent = fontSlider.value + 'px';
     });
   }
+
+  // Mobile font size slider live preview
+  var mobileFontSlider = document.getElementById('profile-heroNameMobileFontSize');
+  if (mobileFontSlider) {
+    mobileFontSlider.addEventListener('input', function() {
+      document.getElementById('heroNameMobileFontSizeValue').textContent = mobileFontSlider.value + 'px';
+    });
+  }
 });
 
 // Tab switching
@@ -2849,6 +2866,8 @@ function loadProfileForm() {
   document.getElementById('profile-heroNameRight').value = profile.heroNameRight || 'ARUI';
   document.getElementById('profile-heroNameFontSize').value = profile.heroNameFontSize || '80';
   document.getElementById('heroNameFontSizeValue').textContent = (profile.heroNameFontSize || '80') + 'px';
+  document.getElementById('profile-heroNameMobileFontSize').value = profile.heroNameMobileFontSize || '48';
+  document.getElementById('heroNameMobileFontSizeValue').textContent = (profile.heroNameMobileFontSize || '48') + 'px';
   document.getElementById('profile-heroTagline').value = profile.heroTagline || '';
 
   // Load brand fields
@@ -2925,6 +2944,7 @@ document.getElementById('profile-form').addEventListener('submit', (e) => {
     heroNameLeft: document.getElementById('profile-heroNameLeft').value,
     heroNameRight: document.getElementById('profile-heroNameRight').value,
     heroNameFontSize: document.getElementById('profile-heroNameFontSize').value,
+    heroNameMobileFontSize: document.getElementById('profile-heroNameMobileFontSize').value,
     heroTagline: document.getElementById('profile-heroTagline').value,
     brandLeft: document.getElementById('profile-brandLeft').value,
     brandRight: document.getElementById('profile-brandRight').value,
