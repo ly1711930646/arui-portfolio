@@ -1732,6 +1732,8 @@ const DEFAULT_PROFILE = {
   heroBadge: 'UI/平面视觉设计',
   heroNameLeft: '李杨',
   heroNameRight: '在线作品合集',
+  heroNameFontSize: '80',
+  heroNameMobileFontSize: '48',
   heroTagline: 'UI / 视觉设计师 | 专注品牌与界面视觉',
   brandLeft: '😊',
   brandRight: ' ',
@@ -2330,6 +2332,16 @@ document.getElementById('year').textContent = new Date().getFullYear();
     var heroName = document.querySelector('.hero__name');
     if (heroName) heroName.style.fontSize = PROFILE.heroNameFontSize + 'px';
   }
+  // Apply mobile hero name font size via media query
+  if (PROFILE.heroNameMobileFontSize) {
+    var mobileStyle = document.getElementById('hero-mobile-font-size');
+    if (!mobileStyle) {
+      mobileStyle = document.createElement('style');
+      mobileStyle.id = 'hero-mobile-font-size';
+      document.head.appendChild(mobileStyle);
+    }
+    mobileStyle.textContent = '@media (max-width: 768px) { .hero__name { font-size: ' + PROFILE.heroNameMobileFontSize + 'px !important; } }';
+  }
   
   // Update profile links
   var emailLink = document.querySelector('[data-profile-link="email"]');
@@ -2392,6 +2404,15 @@ function syncData(key, newValue) {
     if (PROFILE.heroNameFontSize) {
       var heroNameSync = document.querySelector('.hero__name');
       if (heroNameSync) heroNameSync.style.fontSize = PROFILE.heroNameFontSize + 'px';
+    }
+    if (PROFILE.heroNameMobileFontSize) {
+      var mobileStyleSync = document.getElementById('hero-mobile-font-size');
+      if (!mobileStyleSync) {
+        mobileStyleSync = document.createElement('style');
+        mobileStyleSync.id = 'hero-mobile-font-size';
+        document.head.appendChild(mobileStyleSync);
+      }
+      mobileStyleSync.textContent = '@media (max-width: 768px) { .hero__name { font-size: ' + PROFILE.heroNameMobileFontSize + 'px !important; } }';
     }
     var emailLink = document.querySelector('[data-profile-link="email"]');
     var phoneLink = document.querySelector('[data-profile-link="phone"]');
