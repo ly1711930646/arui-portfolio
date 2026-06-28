@@ -281,8 +281,10 @@
       "title": "KOSPET Orb Smart Watch 产品页设计",
       "category": "网页设计",
       "link": "https://www.zcool.com.cn/search/content?word=智能手表作品集&recommendLevel=1&page=2",
-      "thumb": "https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_23_1782636851475.jpg",
-      "images": []
+      "thumb": "https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/cover_23_1782636370537.jpg",
+      "images": [
+        "https://cdn.jsdelivr.net/gh/ly1711930646/arui-portfolio@main/uploads/gallery_23_1782637327532_0.jpg"
+      ]
     }
   ],
   "profile": {
